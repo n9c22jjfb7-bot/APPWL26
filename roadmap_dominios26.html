@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<title>Roadmap Dominios</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;padding:20px;color:#1e293b}
+.header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.logo{width:46px;height:46px;flex-shrink:0}
+.header h1{font-size:22px;font-weight:700;color:#0f172a}
+.header-sub{font-size:11px;color:#94a3b8;margin-top:2px}
+.header-timestamp{position:absolute;top:20px;right:20px;font-size:10px;color:#94a3b8;text-align:right;line-height:1.4}
+.filter-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.fg>label{font-size:10px;font-weight:700;color:#94a3b8;display:block;margin-bottom:5px;letter-spacing:.05em}
+.divider{width:1px;height:32px;background:#e2e8f0}
+.btn-group{display:flex;gap:5px;flex-wrap:wrap}
+.btn{padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:600;transition:all .15s}
+.flag-wrap{display:flex;gap:8px;align-items:center}
+.flag-btn{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .15s;user-select:none}
+.flag-btn:hover{transform:scale(1.1)}
+.flag-btn.solo-active{outline:3px solid #0369a1;outline-offset:2px}
+.switch-wrap{display:flex;align-items:center;gap:8px}
+.switch-label{font-size:11px;font-weight:600;color:#64748b}
+.switch{width:44px;height:24px;border-radius:12px;cursor:pointer;position:relative;border:none;outline:none;transition:background .2s}
+.switch-knob{position:absolute;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
+.kpis{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.kpi{padding:10px 14px;border-radius:8px;border:2px solid #e2e8f0;background:#f1f5f9;cursor:pointer;transition:all .15s;user-select:none}
+.kpi.global{background:#dcfce7;border-color:#86efac;cursor:default}
+.kpi-label{font-size:10px;font-weight:600;color:#64748b}
+.kpi-val{font-size:17px;font-weight:700}
+.legend-bar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:#fff;border:1px solid #e2e8f0;border-bottom:none;border-radius:10px 10px 0 0;padding:9px 18px;justify-content:flex-end}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#475569;font-weight:500}
+.legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.gantt-wrap{overflow-x:auto;background:#fff;border:1px solid #e2e8f0;border-radius:0 0 10px 10px}
+.gantt-inner{display:flex}
+.sidebar{width:220px;flex-shrink:0}
+.sidebar-head,.sidebar-foot{border-right:1px solid #e2e8f0}
+.domain-cell{border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 10px;gap:7px}
+.domain-name{font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;text-align:center}
+.domain-po{font-size:10px;color:#64748b;text-align:center;margin-top:-4px}
+.domain-cta{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;text-decoration:none;color:#fff}
+.domain-cta:hover{opacity:.8}
+.sem-box{width:100%;border-radius:8px;padding:6px 10px;display:flex;justify-content:space-around;align-items:center}
+.sem-col{text-align:center}
+.sem-num{font-size:20px;font-weight:900;line-height:1}
+.sem-sub{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-top:1px}
+.sem-sep{width:1px;height:24px;opacity:.2}
+.domain-alerts{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.alert-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:flex;align-items:center;gap:3px}
+.timeline{flex:1;display:flex;flex-direction:column}
+.month-header,.month-footer{display:flex}
+.month-col{flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid #e2e8f0;height:60px}
+.month-col-foot{flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid #e2e8f0;height:42px}
+.month-name{font-size:14px;font-weight:700}
+.month-year{font-size:11px;color:#94a3b8}
+.month-name-sm{font-size:12px;font-weight:600}
+.month-year-sm{font-size:9px;color:#94a3b8}
+.rows-area{flex:1;position:relative}
+.today-line{position:absolute;top:0;bottom:0;width:2px;background:#ef4444;box-shadow:0 0 8px #ef444499;z-index:20;pointer-events:none}
+.today-label{position:absolute;top:4px;transform:translateX(-50%);background:#ef4444;color:#fff;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;white-space:nowrap;z-index:21;pointer-events:none}
+.epic-row{position:relative;border-bottom:1px solid #f1f5f9}
+.grid-line{position:absolute;top:0;bottom:0;width:1px;background:#f1f5f9;pointer-events:none}
+.epic-bar{position:absolute;border-radius:5px;padding:4px 7px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.epic-flag{position:absolute;top:3px;right:4px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
+.epic-jira{position:absolute;top:3px;right:26px;font-size:8px;font-weight:700;padding:1px 3px;border-radius:2px;color:#fff;text-decoration:none;line-height:13px}
+.epic-expand{position:absolute;top:3px;right:50px;font-size:8px;font-weight:700;padding:1px 4px;border-radius:2px;color:#fff;cursor:pointer;border:none;line-height:13px}
+.epic-title{font-size:10px;font-weight:700;margin-right:70px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.epic-meta{display:flex;align-items:center;gap:3px;margin-top:2px}
+.epic-key{font-size:8px;font-weight:700;padding:1px 3px;border-radius:2px}
+.progress-bg{position:absolute;bottom:3px;left:6px;right:6px;height:3px;border-radius:2px}
+.progress-fill{height:100%;border-radius:2px}
+#tooltip{position:fixed;background:#1e293b;color:#f1f5f9;padding:14px;border-radius:10px;font-size:11px;z-index:9999;max-width:320px;width:320px;box-shadow:0 8px 28px rgba(0,0,0,.35);pointer-events:none;display:none}
+.tt-title{font-weight:700;font-size:13px;margin-bottom:4px}
+.tt-key{color:#94a3b8;font-size:10px;margin-bottom:7px}
+.tt-status{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;color:#fff;display:inline-block;margin-bottom:5px}
+.tt-dates{color:#cbd5e1;font-size:10px;margin-bottom:7px}
+.tt-prog-row{display:flex;justify-content:space-between;font-size:10px;color:#94a3b8;margin-bottom:4px}
+.tt-prog-bg{height:4px;background:#334155;border-radius:2px}
+.tt-prog-fill{height:100%;border-radius:2px}
+.tt-divider{border:none;border-top:1px solid #334155;margin:10px 0}
+.tt-tickets-title{font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:6px;letter-spacing:.05em}
+.tt-ticket-row{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid #1e3a5f}
+.tt-ticket-row:last-child{border-bottom:none}
+.tt-ticket-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.tt-ticket-key{font-size:9px;font-weight:700;color:#93c5fd;flex-shrink:0}
+.tt-ticket-title{font-size:9px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.tt-ticket-status{font-size:8px;font-weight:600;padding:1px 4px;border-radius:2px;flex-shrink:0}
+.tickets-drawer{background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 10px 10px;overflow:hidden;max-height:0;transition:max-height .25s ease}
+.tickets-drawer.open{max-height:600px}
+.tickets-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#f8fafc;border-bottom:1px solid #e2e8f0;border-top:1px solid #e2e8f0}
+.tickets-header h3{font-size:13px;font-weight:700;color:#0f172a}
+.tickets-close{background:none;border:none;cursor:pointer;font-size:16px;color:#94a3b8;padding:2px 6px;border-radius:4px}
+.tickets-close:hover{background:#f1f5f9}
+.tickets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;padding:14px;max-height:500px;overflow-y:auto}
+.ticket-card{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:7px;border:1px solid #e2e8f0;background:#f8fafc}
+.ticket-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.ticket-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ticket-info{flex:1;min-width:0}
+.ticket-key{font-size:10px;font-weight:700;color:#0369a1;text-decoration:none}
+.ticket-key:hover{text-decoration:underline}
+.ticket-title{font-size:11px;color:#334155;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ticket-status{font-size:9px;font-weight:600;margin-top:3px;padding:1px 5px;border-radius:3px;display:inline-block}
+</style>
+</head>
+<body>
+
+<div id="tooltip">
+  <div class="tt-title" id="tt-title"></div>
+  <div class="tt-key" id="tt-key"></div>
+  <div><span class="tt-status" id="tt-status"></span></div>
+  <div class="tt-dates" id="tt-dates"></div>
+  <div class="tt-prog-row"><span>Progreso</span><span id="tt-pct" style="color:#f1f5f9;font-weight:700"></span></div>
+  <div class="tt-prog-bg"><div class="tt-prog-fill" id="tt-fill"></div></div>
+  <div id="tt-tickets-section" style="display:none">
+    <hr class="tt-divider"/>
+    <div class="tt-tickets-title" id="tt-tickets-title"></div>
+    <div id="tt-tickets-list"></div>
+  </div>
+</div>
+
+<div class="header">
+  <svg class="logo" viewBox="0 0 46 46" fill="none">
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#06b6d4"/>
+      </linearGradient>
+      <linearGradient id="g2" x1="16" y1="14" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#67e8f9"/>
+      </linearGradient>
+    </defs>
+    <rect width="46" height="46" rx="11" fill="url(#g1)"/>
+    <path d="M15 11 L15 35 L21 35 L21 27 C21 27 31 27 31 19 C31 11 21 11 21 11 Z" fill="white" opacity="0.95"/>
+    <ellipse cx="21" cy="19" rx="5" ry="5.5" fill="url(#g2)" opacity="0.5"/>
+  </svg>
+  <div>
+    <h1>Roadmap Dominios</h1>
+    <div class="header-sub">May 2026 → Abr 2027 · App WL Regional · datos reales Jira</div>
+  </div>
+  <div class="header-timestamp" id="timestamp"></div>
+</div>
+
+<div class="filter-card">
+  <div class="fg">
+    <label>VISTA</label>
+    <div class="switch-wrap">
+      <span class="switch-label">Desde mes anterior</span>
+      <button class="switch" id="switchBtn" onclick="toggleView()"><div class="switch-knob" id="switchKnob"></div></button>
+      <span id="switchHint" style="font-size:10px;color:#94a3b8"></span>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="fg">
+    <label>ESCALA</label>
+    <div class="btn-group">
+      <button class="btn" id="btnMes" onclick="setScale('mes')">Por mes</button>
+      <button class="btn" id="btnTrimestre" onclick="setScale('trimestre')">Por trimestre</button>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="fg">
+    <label>DOMINIO</label>
+    <div class="btn-group" id="domainBtns"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="fg">
+    <label>PAÍS · doble clic = solo ese país</label>
+    <div class="flag-wrap" id="countryBtns"></div>
+  </div>
+</div>
+
+<div class="kpis" id="kpis"></div>
+
+<div class="legend-bar" id="legendBar"></div>
+
+<div class="gantt-wrap">
+  <div class="gantt-inner" id="ganttInner">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-head" id="sidebarHead"></div>
+      <div id="sidebarRows"></div>
+      <div class="sidebar-foot" id="sidebarFoot"></div>
+    </div>
+    <div class="timeline" id="timeline">
+      <div class="month-header" id="monthHeader"></div>
+      <div class="rows-area" id="rowsArea">
+        <div class="today-line" id="todayLine"></div>
+        <div class="today-label" id="todayLabel"></div>
+        <div id="epicRows"></div>
+      </div>
+      <div class="month-footer" id="monthFooter"></div>
+    </div>
+  </div>
+</div>
+
+<div class="tickets-drawer" id="ticketsDrawer">
+  <div class="tickets-header">
+    <h3 id="ticketsTitle">Tickets</h3>
+    <button class="tickets-close" onclick="closeTickets()">✕</button>
+  </div>
+  <div class="tickets-grid" id="ticketsGrid"></div>
+</div>
+
+<script>
+var COUNTRIES = {
+  CO:{name:'Colombia',       flag:'🇨🇴',color:'#3b82f6'},
+  AR:{name:'Argentina',      flag:'🇦🇷',color:'#f59e0b'},
+  BR:{name:'Brasil',         flag:'🇧🇷',color:'#10b981'},
+  US:{name:'Estados Unidos', flag:'🇺🇸',color:'#ef4444'}
+};
+
+var DOMAINS = {
+  CATALOG:      {color:'#0369a1',po:'Juan Ventura',  hasData:true,  url:'https://cencosud.atlassian.net/jira/software/c/projects/WR/boards/12961/timeline'},
+  ARQUITECTURA: {color:'#9f1239',po:'Luis Correa',   hasData:true, url:'https://cencosud.atlassian.net/jira/software/c/projects/WR/boards/12961/timeline'},
+  CHECKOUT:     {color:'#6b21a8',po:'Luis Cerro',    hasData:true, url:'https://cencosud.atlassian.net/jira/software/c/projects/WR/boards/12961/timeline'},
+  CUSTOMER:     {color:'#166534',po:'Boris Pessano', hasData:true, url:'https://cencosud.atlassian.net/jira/software/c/projects/WR/boards/12961/timeline'},
+  LOYALTY:      {color:'#92400e',po:'Tomás Hercerg', hasData:true, url:'https://cencosud.atlassian.net/jira/software/c/projects/WR/boards/12961/timeline'}
+};
+
+var STATUS = {
+  done:    {bg:'#dcfce7',border:'#16a34a',label:'Realizado',icon:'✓'},
+  ontrack: {bg:'#fef3c7',border:'#d97706',label:'En curso', icon:'▶'},
+  risk:    {bg:'#fed7aa',border:'#ea580c',label:'En riesgo',icon:'!'},
+  overdue: {bg:'#fecaca',border:'#dc2626',label:'Atrasado', icon:'⚠'},
+  todo:    {bg:'#f3f4f6',border:'#6b7280',label:'Por hacer',icon:'○'}
+};
+
+var MONTH_NAMES   = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+var DAYS_IN_MONTH = [31,29,31,30,31,30,31,31,30,31,30,31];
+
+var QUARTERS = [
+  {label:'Q1 2026',months:[{y:2026,m:0},{y:2026,m:1},{y:2026,m:2}],days:90},
+  {label:'Q2 2026',months:[{y:2026,m:3},{y:2026,m:4},{y:2026,m:5}],days:91},
+  {label:'Q3 2026',months:[{y:2026,m:6},{y:2026,m:7},{y:2026,m:8}],days:92},
+  {label:'Q4 2026',months:[{y:2026,m:9},{y:2026,m:10},{y:2026,m:11}],days:92},
+  {label:'Q1 2027',months:[{y:2027,m:0},{y:2027,m:1},{y:2027,m:2}],days:90}
+];
+
+var ALL_EPICS = {
+  CATALOG:[
+    {key:'WR-2964',title:'Mis Listas CO',status:'ontrack',progress:0,country:'CO',start:[2026, 4, 4],end:[2026, 4, 29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2964',tickets:[{'key':'WR-2954','title':'[BE] Seguridad y monitoreo Mis listas','status':'Ready for Testing'},{'key':'WR-2953','title':'[BE] Manejo de eventos Mis listas','status':'Code Review'},{'key':'WR-2951','title':'[BE] Casos de uso list query Mis listas','status':'Ready for Testing'},{'key':'WR-2949','title':'[BE] Casos de negocio Mis listas','status':'Ready for Testing'},{'key':'WR-2948','title':'[BE] Capa de persistencia Mis listas','status':'Ready for Testing'},{'key':'WR-2947','title':'[BE] Preparacion infra Mis listas','status':'Pruebas'},{'key':'WR-2944','title':'[BE] Definir protobuf Mis listas','status':'Validacion'},{'key':'WR-2603','title':'[BE] Endpoint para eliminar producto de favoritos','status':'Backlog'},{'key':'WR-2601','title':'[BE] Endpoint agregar a favoritos','status':'Backlog'},{'key':'WR-904','title':'[BE] Implementar Redis a Mis listas','status':'Validacion'},{'key':'WR-903','title':'[BE] Mis listas recibir productos sin dependencia','status':'Validacion'}]},
+    {key:'WR-3514',title:'Search Algolia',status:'todo',progress:0,country:'CO',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3514',tickets:[]},
+    {key:'WR-3392',title:'Recomendación ARG',status:'todo',progress:0,country:'AR',start:[2026, 5, 1],end:[2026, 5, 15],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3392',tickets:[{'key':'WR-2923','title':'[BE][AR] Migrar Personalize a product/recommendations','status':'Pruebas'},{'key':'WR-1412','title':'[BE] Micro de product no debe devolver productos sin stock','status':'Validacion'},{'key':'WR-942','title':'[BE][AR] Pensados para ti - Personalize','status':'Cancelado'},{'key':'WR-325','title':'[BE] Servicios Personalize','status':'Validacion'}]},
+    {key:'WR-3398',title:'Mis Listas ARG',status:'todo',progress:0,country:'AR',start:[2026, 5, 15],end:[2026, 5, 26],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3398',tickets:[]},
+    {key:'WR-3439',title:'Puntos Cenco',status:'todo',progress:0,country:'CO',start:[2026, 5, 29],end:[2026, 6, 27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3439',tickets:[]},
+    {key:'WR-3494',title:'VEA',status:'todo',progress:0,country:'AR',start:[2026, 5, 1],end:[2026, 6, 27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3494',tickets:[]},
+    {key:'WR-3400',title:'Recomendación CO',status:'todo',progress:0,country:'CO',start:[2026, 6, 13],end:[2026, 6, 27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3400',tickets:[]},
+    {key:'WR-3363',title:'Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3363',tickets:[{'key':'WR-3461','title':'[BE][CO] Mostrar promotion caso TMP - APP','status':'Actividad Refinada'},{'key':'WR-3321','title':'[BE][Catalog][BR] Ocultar installments','status':'En progreso'},{'key':'WR-2860','title':'[BE][BR] Tag exclusivo online para promos','status':'Ready For Release'}]},
+    {key:'WR-3368',title:'Fixes',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3368',tickets:[{'key':'WR-3468','title':'[BE] Search - resultados','status':'Seleccionado para desarrollar'},{'key':'WR-3454','title':'[BE][AR] Search - keyword: griego','status':'En Refinamiento'},{'key':'WR-3347','title':'[BE][BR] Ajuste acumulacion promociones','status':'Actividad Refinada'},{'key':'WR-3346','title':'[BE][BR] Ajuste tag para voce','status':'En Refinamiento'},{'key':'WR-3252','title':'[BUG][BE][BR] Correccion de extraData','status':'En Refinamiento'},{'key':'WR-3152','title':'[BE] Catalog - Promociones distintas','status':'Actividad Refinada'},{'key':'WR-2937','title':'[BE] Ajustar comportamiento de los resgates','status':'En Refinamiento'},{'key':'WR-2721','title':'[BE] Mostrando promociones incorrectamente','status':'Suspendido (Hold)'},{'key':'WR-2385','title':'[BE][Catalog][BR] Poblar informacion de cursos','status':'Suspendido (Hold)'}]},
+    {key:'WR-3372',title:'Deuda Técnica',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3372',tickets:[]},
+  ],
+  ARQUITECTURA:[
+    {key:'WR-2772',title:'Migración y unificación de notificaciones de órdenes e-commerce a la app The Fresh Market',status:'ontrack',progress:0,country:'CO',start:[2026, 3, 21],end:[2026, 4, 8],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2772',tickets:[]},
+  ],
+  CHECKOUT:[
+    {key:'WR-2848',title:'[BACK] IMPROVEMENT CARRO V1',status:'todo',progress:0,country:'CO',start:[2026, 4, 1],end:[2026, 4, 29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2848',tickets:[]},
+    {key:'WR-3333',title:'[CO][CKO] Profile',status:'todo',progress:0,country:'CO',start:[2026, 4, 30],end:[2026, 5, 12],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3333',tickets:[]},
+    {key:'WR-3334',title:'[CO][CKO] Shipping',status:'todo',progress:0,country:'CO',start:[2026, 5, 15],end:[2026, 6, 10],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3334',tickets:[]},
+    {key:'WR-3335',title:'[CO][CKO] Billing',status:'todo',progress:0,country:'CO',start:[2026, 6, 13],end:[2026, 7, 7],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3335',tickets:[]},
+    {key:'WR-3336',title:'[CO][CKO] Confirmation',status:'todo',progress:0,country:'CO',start:[2026, 7, 10],end:[2026, 7, 21],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3336',tickets:[]},
+    {key:'WR-3364',title:'[CKO] Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3364',tickets:[]},
+    {key:'WR-3369',title:'[CKO] Fixes',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3369',tickets:[]},
+    {key:'WR-3373',title:'[CKO] Deuda técnica',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3373',tickets:[]},
+  ],
+  CUSTOMER:[
+    {key:'WR-3362',title:'[Customer] Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3362',tickets:[]},
+    {key:'WR-3367',title:'[Customer] Fixes',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3367',tickets:[]},
+    {key:'WR-3371',title:'[Customer] Deuda técnica',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3371',tickets:[]},
+    {key:'WR-3403',title:'[Customer] Improvement Login',status:'todo',progress:0,country:'CO',start:[2026, 5, 1],end:[2026, 5, 15],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3403',tickets:[]},
+    {key:'WR-3438',title:'[Customer] Puntos Cenco',status:'todo',progress:0,country:'CO',start:[2026, 5, 29],end:[2026, 6, 27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3438',tickets:[]},
+    {key:'WR-3493',title:'[Customer] VEA',status:'todo',progress:0,country:'CO',start:[2026, 5, 1],end:[2026, 6, 27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3493',tickets:[]},
+    {key:'WR-3496',title:'[Customer] Experiencia CP',status:'todo',progress:0,country:'CO',start:[2026, 5, 15],end:[2026, 5, 29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3496',tickets:[]},
+    {key:'WR-3507',title:'[TFM][BE][Customer] Purchase Notifications',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3507',tickets:[]},
+    {key:'WR-3516',title:'[TFM][BE][Customer] See my order sections',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3516',tickets:[]},
+    {key:'WR-3524',title:'[TFM][BE][Customer] Notifications Inbox',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3524',tickets:[]},
+    {key:'WR-3528',title:'[TFM][BE][Customer] Social Log In',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3528',tickets:[]},
+    {key:'WR-3531',title:'[TFM][BE][Customer] Push Segmentadas',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3531',tickets:[]},
+    {key:'WR-3533',title:'[TFM][BE][Customer] Mejoras Selección de Store',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3533',tickets:[]},
+    {key:'WR-3535',title:'[TFM][BE][Customer] Member Events',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3535',tickets:[]},
+  ],
+  LOYALTY:[
+    {key:'WR-1722',title:'[Backend] Wallet section',status:'todo',progress:0,country:'CO',start:[2025, 7, 12],end:[2026, 3, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-1722',tickets:[]},
+    {key:'WR-3366',title:'[Loyalty] Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3366',tickets:[]},
+    {key:'WR-3370',title:'[Loyalty] Fixes',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3370',tickets:[]},
+    {key:'WR-3374',title:'[Loyalty] Deuda técnica',status:'todo',progress:0,country:'CO',start:[2026, 4, 18],end:[2027, 3, 30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3374',tickets:[]},
+    {key:'WR-3408',title:'[Loyalty] Puntos Cenco',status:'todo',progress:0,country:'CO',start:[2026, 5, 29],end:[2026, 6, 27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3408',tickets:[]},
+    {key:'WR-3505',title:'[TFM][BE][Loyalty] Cashback Wallet 2.0',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3505',tickets:[]},
+    {key:'WR-3512',title:'[TFM][BE][Loyalty] Continuity Offers',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3512',tickets:[]},
+    {key:'WR-3518',title:'[TFM][BE][Loyalty] Club Hubs 2.0',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3518',tickets:[]},
+    {key:'WR-3520',title:'[TFM][BE][Loyalty] Loyalty 2.0',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3520',tickets:[]},
+    {key:'WR-3522',title:'[TFM][BE][Loyalty] Birthday in App',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3522',tickets:[]},
+    {key:'WR-3526',title:'[TFM][BE][Loyalty] Deals',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3526',tickets:[]},
+    {key:'WR-3537',title:'[TFM][BE][Loyalty] Recipes',status:'todo',progress:0,country:'US',start:[2026, 4, 21],end:[2026, 5, 30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3537',tickets:[]},
+  ],
+};
+
+var now           = new Date();
+var sinceLastMonth= true;
+var scale         = 'mes';
+var filterStatus  = {done:true,ontrack:true,risk:true,overdue:true,todo:true};
+var filterDomains = {};
+Object.keys(DOMAINS).forEach(function(d){ filterDomains[d] = DOMAINS[d].hasData; });
+var filterCountries = {CO:true,AR:true,BR:true,US:true};
+var soloCountry   = null;
+var SIDEBAR_W     = 220;
+var ROW_H         = 56;
+var BAR_GAP       = 4;
+var MIN_DOMAIN_H  = 180;
+
+function getColW(){ return scale === 'mes' ? 216 : 280; }
+
+function buildCols(){
+  var COL_W = getColW();
+  if(scale === 'trimestre'){
+    var qs = QUARTERS.slice();
+    if(sinceLastMonth){
+      var prevM = now.getMonth()===0?11:now.getMonth()-1;
+      var prevY = now.getMonth()===0?now.getFullYear()-1:now.getFullYear();
+      qs = qs.filter(function(q){var l=q.months[q.months.length-1];return l.y>prevY||(l.y===prevY&&l.m>=prevM);});
+    }
+    var td = qs.reduce(function(s,q){return s+q.days;},0);
+    return {type:'trimestre',qs:qs,totalDays:td,COL_W:COL_W};
+  }
+  var all=[];
+  var y=2026,m=4;
+  while(y<2027||(y===2027&&m<=3)){all.push({year:y,month:m});m++;if(m>11){m=0;y++;}}
+  var months=all;
+  if(sinceLastMonth){
+    var pm=now.getMonth()===0?11:now.getMonth()-1;
+    var py=now.getMonth()===0?now.getFullYear()-1:now.getFullYear();
+    var idx=all.findIndex(function(x){return x.year===py&&x.month===pm;});
+    if(idx>=0)months=all.slice(idx);
+  }
+  return {type:'mes',months:months,COL_W:COL_W};
+}
+
+function dateToPx(arr,cols){
+  var y=arr[0],m=arr[1],d=arr[2];
+  var COL_W=cols.COL_W;
+  if(cols.type==='mes'){
+    var px=0;
+    for(var i=0;i<cols.months.length;i++){
+      var c=cols.months[i];
+      if(c.year===y&&c.month===m)return px+(d/DAYS_IN_MONTH[m])*COL_W;
+      px+=COL_W;
+    }
+    return cols.months.length*COL_W;
+  }
+  if(!cols.qs.length)return 0;
+  var s0=cols.qs[0].months[0];
+  var startDate=new Date(s0.y,s0.m,1);
+  var days=Math.round((new Date(y,m,d)-startDate)/86400000);
+  return Math.max(0,(days/cols.totalDays)*(cols.qs.length*COL_W));
+}
+
+function totalW(cols){
+  return cols.type==='mes'?cols.months.length*cols.COL_W:cols.qs.length*cols.COL_W;
+}
+
+function getEpicPx(epic,cols){
+  var tot=totalW(cols);
+  var endArr=epic.continua?[2027,3,30]:epic.end;
+  var s=Math.max(0,Math.min(dateToPx(epic.start,cols),tot));
+  var e=Math.max(0,Math.min(dateToPx(endArr,cols),tot));
+  return {startPx:s,endPx:e,widthPx:Math.max(e-s,4)};
+}
+
+function packRows(epics,cols){
+  if(!epics.length)return[];
+  var countryOrder=Object.keys(COUNTRIES);
+  var sorted=epics.slice().sort(function(a,b){
+    var ca=countryOrder.indexOf(a.country),cb=countryOrder.indexOf(b.country);
+    if(ca!==cb)return ca-cb;
+    return dateToPx(a.start,cols)-dateToPx(b.start,cols);
+  });
+  var rows=[];
+  for(var i=0;i<sorted.length;i++){
+    var epic=sorted[i];
+    var px=getEpicPx(epic,cols);
+    var placed=false;
+    for(var r=0;r<rows.length;r++){
+      if(rows[r].country===epic.country&&px.startPx>=rows[r].maxEndPx+8){
+        rows[r].epics.push(epic);rows[r].maxEndPx=Math.max(rows[r].maxEndPx,px.endPx);placed=true;break;
+      }
+    }
+    if(!placed){
+      for(var r2=0;r2<rows.length;r2++){
+        if(px.startPx>=rows[r2].maxEndPx+8){
+          rows[r2].epics.push(epic);rows[r2].maxEndPx=Math.max(rows[r2].maxEndPx,px.endPx);placed=true;break;
+        }
+      }
+    }
+    if(!placed)rows.push({epics:[epic],maxEndPx:px.endPx,country:epic.country});
+  }
+  return rows;
+}
+
+function semaforo(avg,count){
+  if(count===0)return{color:'#94a3b8',bg:'#f1f5f9'};
+  if(avg>=70)  return{color:'#16a34a',bg:'#dcfce7'};
+  if(avg>=30)  return{color:'#ea580c',bg:'#fff7ed'};
+  return             {color:'#dc2626',bg:'#fef2f2'};
+}
+
+function fmtDate(arr){return new Date(arr[0],arr[1],arr[2]).toLocaleDateString('es-ES');}
+
+function ticketStatusColor(s){
+  var m={'En progreso':'#0284c7','Ready for Testing':'#7c3aed','Code Review':'#7c3aed','Ready For Release':'#059669','Validación':'#059669','Pruebas':'#059669','Backlog':'#94a3b8','Para hacer':'#94a3b8','Cancelado':'#dc2626','Suspendido (Hold)':'#dc2626','En Refinamiento':'#f59e0b','Actividad Refinada':'#f59e0b','Seleccionado para desarrollar':'#0284c7'};
+  return m[s]||'#94a3b8';
+}
+
+var ttEl=document.getElementById('tooltip');
+var ttVisible=false;
+document.addEventListener('mousemove',function(e){
+  if(!ttVisible)return;
+  var x=e.clientX+16,y=e.clientY+16;
+  if(x+240>window.innerWidth)x=e.clientX-256;
+  if(y+180>window.innerHeight)y=e.clientY-196;
+  ttEl.style.left=x+'px';ttEl.style.top=y+'px';
+});
+
+function showTip(title,key,label,color,start,end,pct,tickets){
+  document.getElementById('tt-title').textContent=title;
+  document.getElementById('tt-key').textContent=key;
+  var s=document.getElementById('tt-status');s.textContent=label;s.style.background=color;
+  document.getElementById('tt-dates').textContent=start+' → '+end;
+  document.getElementById('tt-pct').textContent=pct+'%';
+  var f=document.getElementById('tt-fill');f.style.width=pct+'%';f.style.background=color;
+  var resolvedTickets=tickets;
+  if(typeof tickets==='string'){
+    var allFlat2=[];
+    Object.keys(ALL_EPICS).forEach(function(d){ALL_EPICS[d].forEach(function(e){allFlat2.push(e);});});
+    var foundEpic=null;
+    for(var fi=0;fi<allFlat2.length;fi++){if(allFlat2[fi].key===tickets){foundEpic=allFlat2[fi];break;}}
+    resolvedTickets=foundEpic&&foundEpic.tickets?foundEpic.tickets:[];
+  }
+  var sec=document.getElementById('tt-tickets-section');
+  var list=document.getElementById('tt-tickets-list');
+  var ttl=document.getElementById('tt-tickets-title');
+  if(resolvedTickets&&resolvedTickets.length>0){
+    tickets=resolvedTickets;
+    ttl.textContent='TICKETS ('+tickets.length+')';
+    var lh='';
+    for(var i=0;i<tickets.length;i++){
+      var t=tickets[i];
+      var tc=ticketStatusColor(t.status);
+      lh+='<div class="tt-ticket-row">'
+        +'<div class="tt-ticket-dot" style="background:'+tc+'"></div>'
+        +'<span class="tt-ticket-key">'+t.key+'</span>'
+        +'<span class="tt-ticket-title" title="'+t.title+'">'+t.title+'</span>'
+        +'<span class="tt-ticket-status" style="background:'+tc+'33;color:'+tc+'">'+t.status+'</span>'
+        +'</div>';
+    }
+    list.innerHTML=lh;
+    sec.style.display='block';
+  } else {
+    sec.style.display='none';
+    list.innerHTML='';
+  }
+  ttEl.style.display='block';ttVisible=true;
+}
+function hideTip(){ttEl.style.display='none';ttVisible=false;}
+
+function openTickets(epicKey){
+  var allFlat=[];
+  Object.keys(ALL_EPICS).forEach(function(d){ALL_EPICS[d].forEach(function(e){allFlat.push(e);});});
+  var epic=null;
+  for(var i=0;i<allFlat.length;i++){if(allFlat[i].key===epicKey){epic=allFlat[i];break;}}
+  if(!epic||!epic.tickets||!epic.tickets.length)return;
+  document.getElementById('ticketsTitle').textContent=epic.title+' — '+epic.tickets.length+' ticket'+(epic.tickets.length!==1?'s':'');
+  var html='';
+  for(var i=0;i<epic.tickets.length;i++){
+    var t=epic.tickets[i];
+    var color=ticketStatusColor(t.status);
+    html+='<div class="ticket-card">'
+      +'<div class="ticket-dot" style="background:'+color+'"></div>'
+      +'<div class="ticket-info">'
+      +'<a class="ticket-key" href="https://cencosud.atlassian.net/browse/'+t.key+'" target="_blank">'+t.key+'</a>'
+      +'<div class="ticket-title" title="'+t.title+'">'+t.title+'</div>'
+      +'<span class="ticket-status" style="background:'+color+'18;color:'+color+'">'+t.status+'</span>'
+      +'</div></div>';
+  }
+  document.getElementById('ticketsGrid').innerHTML=html;
+  var drawer=document.getElementById('ticketsDrawer');
+  drawer.classList.add('open');
+  setTimeout(function(){drawer.scrollIntoView({behavior:'smooth',block:'nearest'});},50);
+}
+function closeTickets(){
+  document.getElementById('ticketsDrawer').classList.remove('open');
+}
+
+function render(){
+  var cols=buildCols();
+  var tot=totalW(cols);
+  var COL_W=cols.COL_W;
+  var activeCodes=soloCountry?[soloCountry]:Object.keys(filterCountries).filter(function(c){return filterCountries[c];});
+
+  var allFlat=[];
+  Object.keys(ALL_EPICS).forEach(function(d){ALL_EPICS[d].forEach(function(e){allFlat.push(Object.assign({},e,{domain:d}));});});
+
+  var filtered=allFlat.filter(function(e){
+    return filterStatus[e.status]&&filterDomains[e.domain]&&activeCodes.indexOf(e.country)>=0;
+  });
+
+  var byDomain={};
+  Object.keys(DOMAINS).forEach(function(d){byDomain[d]=[];});
+  filtered.forEach(function(e){byDomain[e.domain].push(e);});
+
+  var visibleDomains=Object.keys(DOMAINS).filter(function(d){return filterDomains[d]&&byDomain[d].length>0;});
+
+  var stats={done:0,ontrack:0,risk:0,overdue:0,todo:0,total:filtered.length,avg:0};
+  var psum=0;
+  filtered.forEach(function(e){stats[e.status]++;psum+=e.progress;});
+  stats.avg=filtered.length?Math.round(psum/filtered.length):0;
+
+  var todayPx=Math.max(0,Math.min(dateToPx([now.getFullYear(),now.getMonth(),now.getDate()],cols),tot));
+  var todayPct=(todayPx/tot)*100;
+
+  document.getElementById('ganttInner').style.minWidth=(SIDEBAR_W+tot)+'px';
+
+  var sw=document.getElementById('switchBtn'),kn=document.getElementById('switchKnob');
+  sw.style.background=sinceLastMonth?'#0369a1':'#cbd5e1';
+  kn.style.left=sinceLastMonth?'23px':'3px';
+  document.getElementById('switchHint').textContent=sinceLastMonth?'Abr '+now.getFullYear()+' →':'Ene 2026 →';
+
+  document.getElementById('btnMes').style.background=scale==='mes'?'#0369a1':'#e2e8f0';
+  document.getElementById('btnMes').style.color=scale==='mes'?'#fff':'#64748b';
+  document.getElementById('btnTrimestre').style.background=scale==='trimestre'?'#0369a1':'#e2e8f0';
+  document.getElementById('btnTrimestre').style.color=scale==='trimestre'?'#fff':'#64748b';
+
+  var dbHtml='';
+  Object.keys(DOMAINS).forEach(function(d){
+    var cfg=DOMAINS[d];
+    var active=filterDomains[d];
+    dbHtml+='<button class="btn" '+(cfg.hasData?'onclick="toggleDomain(\''+d+'\')"':'')+' style="background:'+(active?cfg.color:'#e2e8f0')+';color:'+(active?'#fff':'#94a3b8')+';cursor:'+(cfg.hasData?'pointer':'not-allowed')+';opacity:'+(cfg.hasData?1:0.4)+'" title="'+(cfg.hasData?'':'Sin datos cargados')+'">'+d+'</button>';
+  });
+  document.getElementById('domainBtns').innerHTML=dbHtml;
+
+  var cbHtml='';
+  Object.keys(COUNTRIES).forEach(function(c){
+    var ct=COUNTRIES[c];
+    var isActive=activeCodes.indexOf(c)>=0;
+    var isSolo=soloCountry===c;
+    cbHtml+='<button class="flag-btn'+(isSolo?' solo-active':'')+'" onclick="toggleCountry(\''+c+'\')" ondblclick="setSolo(\''+c+'\')" title="'+ct.name+' · Doble clic = solo este país" style="background:'+(isActive?ct.color:'#e2e8f0')+';box-shadow:'+(isActive?'0 0 0 3px '+ct.color+'44':'none')+';opacity:'+((!isActive&&soloCountry&&soloCountry!==c)?0.35:1)+'">'+ct.flag+'</button>';
+  });
+  if(soloCountry){cbHtml+='<button onclick="setSolo(null)" style="padding:4px 8px;border-radius:6px;border:none;cursor:pointer;font-size:10px;font-weight:700;background:#ef4444;color:#fff;margin-left:4px">✕</button>';}
+  document.getElementById('countryBtns').innerHTML=cbHtml;
+
+  var kHtml='<div class="kpi global"><div class="kpi-label">Avance global</div><div class="kpi-val" style="color:#16a34a">'+stats.avg+'%</div></div>';
+  [{label:'Done',count:stats.done,color:'#16a34a',icon:'✓',st:'done'},{label:'Curso',count:stats.ontrack,color:'#d97706',icon:'▶',st:'ontrack'},{label:'Riesgo',count:stats.risk,color:'#ea580c',icon:'!',st:'risk'},{label:'Atraso',count:stats.overdue,color:'#dc2626',icon:'⚠',st:'overdue'},{label:'Pend.',count:stats.todo,color:'#6b7280',icon:'○',st:'todo'},{label:'Total',count:stats.total,color:'#64748b',icon:'#',st:null}].forEach(function(c){
+    kHtml+='<div class="kpi" onclick="'+(c.st?'toggleStatus(\''+c.st+'\')':'')+'" style="border-color:'+(c.st&&filterStatus[c.st]?c.color:'#e2e8f0')+';opacity:'+(c.st&&!filterStatus[c.st]?0.4:1)+';cursor:'+(c.st?'pointer':'default')+'">'
+      +'<div class="kpi-label">'+c.label+'</div>'
+      +'<div class="kpi-val" style="color:'+c.color+'">'+c.icon+' '+c.count+'</div></div>';
+  });
+  document.getElementById('kpis').innerHTML=kHtml;
+
+  var lHtml='';
+  Object.keys(STATUS).forEach(function(k){var v=STATUS[k];lHtml+='<div class="legend-item"><div class="legend-dot" style="background:'+v.bg+';border:1px solid '+v.border+'"></div>'+v.label+'</div>';});
+  document.getElementById('legendBar').innerHTML=lHtml;
+
+  var HEADER_H=60,FOOTER_H=42;
+  document.getElementById('sidebarHead').style.height=HEADER_H+'px';
+  document.getElementById('sidebarFoot').style.height=FOOTER_H+'px';
+  var shHtml='';
+  visibleDomains.forEach(function(domain){
+    var epics=byDomain[domain];
+    var rows=packRows(epics,cols);
+    var h=Math.max(rows.length*ROW_H, MIN_DOMAIN_H);
+    var cfg=DOMAINS[domain];
+    var psum2=0;epics.forEach(function(e){psum2+=e.progress;});
+    var avg=epics.length?Math.round(psum2/epics.length):0;
+    var sem=semaforo(avg,epics.length);
+    var riskN=epics.filter(function(e){return e.status==='risk';}).length;
+    var overdueN=epics.filter(function(e){return e.status==='overdue';}).length;
+    var alerts='';
+    if(riskN)alerts+='<div class="alert-badge" style="background:#fff7ed;color:#ea580c;border:1px solid #ea580c">! '+riskN+' riesgo</div>';
+    if(overdueN)alerts+='<div class="alert-badge" style="background:#fef2f2;color:#dc2626;border:1px solid #dc2626">⚠ '+overdueN+' atraso</div>';
+    shHtml+='<div class="domain-cell" style="height:'+h+'px">'
+      +'<div><div class="domain-name" style="color:'+cfg.color+'">'+domain+'</div><div class="domain-po">'+cfg.po+'</div></div>'
+      +'<a class="domain-cta" href="'+cfg.url+'" target="_blank" style="background:'+cfg.color+'">Ver cronograma ↗</a>'
+      +'<div class="sem-box" style="background:'+sem.bg+'">'
+        +'<div class="sem-col"><div class="sem-num" style="color:'+sem.color+'">'+epics.length+'</div><div class="sem-sub" style="color:'+sem.color+'">épica'+(epics.length!==1?'s':'')+'</div></div>'
+        +'<div class="sem-sep" style="background:'+sem.color+'"></div>'
+        +'<div class="sem-col"><div class="sem-num" style="color:'+sem.color+'">'+avg+'%</div><div class="sem-sub" style="color:'+sem.color+'">avance</div></div>'
+      +'</div>'
+      +(alerts?'<div class="domain-alerts">'+alerts+'</div>':'')
+      +'</div>';
+  });
+  document.getElementById('sidebarRows').innerHTML=shHtml;
+
+  function buildMonthCols(foot){
+    var h='';
+    if(cols.type==='mes'){
+      cols.months.forEach(function(col,i){
+        var isNow=col.year===now.getFullYear()&&col.month===now.getMonth();
+        var cls=foot?'month-col-foot':'month-col';
+        h+='<div class="'+cls+'" style="width:'+COL_W+'px;background:'+(isNow?'#e0f2fe':(i%2===0?'#fff':'#fafafa'))+';border-top:'+(!foot&&isNow?'3px solid #0ea5e9':'none')+'">'
+          +'<div class="'+(foot?'month-name-sm':'month-name')+'" style="color:'+(isNow?'#0ea5e9':'#64748b')+'">'+(isNow?'📍':'')+MONTH_NAMES[col.month]+'</div>'
+          +'<div class="'+(foot?'month-year-sm':'month-year')+'">'+col.year+'</div>'
+          +'</div>';
+      });
+    } else {
+      cols.qs.forEach(function(q,i){
+        var isCurrent=q.months.some(function(x){return x.y===now.getFullYear()&&x.m===now.getMonth();});
+        var cls=foot?'month-col-foot':'month-col';
+        var subNames=q.months.map(function(x){return MONTH_NAMES[x.m];}).join('·');
+        h+='<div class="'+cls+'" style="width:'+COL_W+'px;background:'+(isCurrent?'#e0f2fe':(i%2===0?'#fff':'#fafafa'))+';border-top:'+(!foot&&isCurrent?'3px solid #0ea5e9':'none')+'">'
+          +'<div class="'+(foot?'month-name-sm':'month-name')+'" style="color:'+(isCurrent?'#0ea5e9':'#64748b')+'">'+(isCurrent?'📍':'')+q.label+'</div>'
+          +'<div class="'+(foot?'month-year-sm':'month-year')+'" style="font-size:10px">'+subNames+'</div>'
+          +'</div>';
+      });
+    }
+    return h;
+  }
+  document.getElementById('monthHeader').innerHTML=buildMonthCols(false);
+  document.getElementById('monthFooter').innerHTML=buildMonthCols(true);
+
+  document.getElementById('todayLine').style.left=todayPct+'%';
+  document.getElementById('todayLabel').style.left=todayPct+'%';
+  document.getElementById('todayLabel').textContent='HOY '+now.getDate()+'/'+(now.getMonth()+1);
+
+  var colCount=cols.type==='mes'?cols.months.length:cols.qs.length;
+  var gridLines='';
+  for(var gi=0;gi<colCount;gi++)gridLines+='<div class="grid-line" style="left:'+(gi*COL_W)+'px"></div>';
+
+  var erHtml='';
+  visibleDomains.forEach(function(domain){
+    var rows=packRows(byDomain[domain],cols);
+    var domainH=Math.max(rows.length*ROW_H, MIN_DOMAIN_H);
+    var domainRowsHtml='';
+    rows.forEach(function(row,rowIdx){
+      var bHtml='';
+      row.epics.forEach(function(epic){
+        var px=getEpicPx(epic,cols);
+        var lPct=(px.startPx/tot)*100;
+        var wPct=(px.widthPx/tot)*100;
+        var st=STATUS[epic.status];
+        var ct=COUNTRIES[epic.country];
+        var hasTickets=epic.tickets&&epic.tickets.length>0;
+        var safeTitle=epic.title.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        var expandBtn=hasTickets
+          ?'<button class="epic-expand" onclick="event.stopPropagation();openTickets(\''+epic.key+'\')" style="background:'+st.border+'">▼ '+epic.tickets.length+'</button>'
+          :'';
+        bHtml+='<div class="epic-bar"'
+          +' onmouseenter="showTip(\''+safeTitle+'\',\''+epic.key+'\',\''+st.label+'\',\''+st.border+'\',\''+fmtDate(epic.start)+'\',\''+fmtDate(epic.end)+'\','+epic.progress+',\''+epic.key+'\')"'
+          +' onmouseleave="hideTip()"'
+          +' style="left:'+lPct+'%;width:'+wPct+'%;top:'+BAR_GAP+'px;bottom:'+BAR_GAP+'px;background:'+st.bg+';border:2px solid '+st.border+';border-right:'+(epic.continua?'3px dashed '+st.border:'2px solid '+st.border)+'">'
+          +'<div class="epic-flag" style="background:'+ct.color+'22">'+ct.flag+'</div>'
+          +'<a class="epic-jira" href="'+epic.url+'" target="_blank" style="background:'+st.border+'" onclick="event.stopPropagation()">↗</a>'
+          +expandBtn
+          +'<div class="epic-title" style="color:'+st.border+'">'+epic.title+'</div>'
+          +'<div class="epic-meta">'
+          +'<span class="epic-key" style="color:'+st.border+';background:'+st.border+'18">'+epic.key+'</span>'
+          +' <span style="color:'+st.border+';font-weight:700;font-size:8px">'+epic.progress+'%</span>'
+          +(hasTickets?' <span style="color:'+st.border+';font-size:8px;opacity:.8">· '+epic.tickets.length+' ticket'+(epic.tickets.length!==1?'s':'')+'</span>':'')
+          +'</div>'
+          +'<div class="progress-bg" style="background:'+st.border+'22"><div class="progress-fill" style="width:'+epic.progress+'%;background:'+st.border+'"></div></div>'
+          +'</div>';
+      });
+      domainRowsHtml+='<div class="epic-row" style="height:'+ROW_H+'px">'+gridLines+bHtml+'</div>';
+    });
+    erHtml+='<div style="height:'+domainH+'px;position:relative">'+domainRowsHtml+'</div>';
+  });
+  document.getElementById('epicRows').innerHTML=erHtml;
+}
+
+function toggleView(){sinceLastMonth=!sinceLastMonth;render();}
+function setScale(s){scale=s;render();}
+function toggleStatus(s){filterStatus[s]=!filterStatus[s];render();}
+function toggleDomain(d){if(!DOMAINS[d].hasData)return;filterDomains[d]=!filterDomains[d];render();}
+function toggleCountry(c){filterCountries[c]=!filterCountries[c];render();}
+function setSolo(c){soloCountry=(soloCountry===c?null:c);render();}
+
+function updateTimestamp(){
+  var now=new Date();
+  var day=String(now.getDate()).padStart(2,'0');
+  var mon=String(now.getMonth()+1).padStart(2,'0');
+  var year=now.getFullYear();
+  var hours=String(now.getHours()).padStart(2,'0');
+  var mins=String(now.getMinutes()).padStart(2,'0');
+  var secs=String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('timestamp').innerHTML='Actualizado:<br/>'+day+'/'+mon+'/'+year+'<br/>'+hours+':'+mins+':'+secs;
+}
+
+updateTimestamp();
+render();
+</script>
+</body>
+</html>
