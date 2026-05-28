@@ -132,10 +132,13 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; padd
   border-radius: 10px;
   font-size: 11px;
   z-index: 9999;
-  max-width: 290px;
-  width: 290px;
+  min-width: 300px;
+  max-width: min(560px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  width: max-content;
   box-shadow: 0 8px 28px rgba(0,0,0,.35);
-  pointer-events: none;
+  pointer-events: auto;
   display: none;
 }
 .tt-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
@@ -202,7 +205,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; padd
   <div class="tt-dates"  id="tt-dates"></div>
   <div class="tt-prog-row"><span>Progreso</span><span id="tt-pct" style="color:#f1f5f9;font-weight:700"></span></div>
   <div class="tt-prog-bg"><div class="tt-prog-fill" id="tt-fill"></div></div>
-  <div id="tt-tickets" style="margin-top:8px"></div>
+  <div id="tt-tickets" style="margin-top:8px;max-height:420px;overflow-y:auto;pointer-events:auto"></div>
 </div>
 
 <div class="header">
@@ -229,7 +232,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; padd
 </div>
 
 <div class="filter-card">
-  <!-- Switch -->
+  <!-- Switch VISTA -->
   <div class="fg">
     <label>VISTA</label>
     <div class="switch-wrap">
@@ -238,6 +241,18 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; padd
         <div class="switch-knob" id="switchKnob"></div>
       </button>
       <span id="switchHint" style="font-size:10px;color:#94a3b8"></span>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <!-- Switch OPERACIÓN -->
+  <div class="fg">
+    <label>OPERACIÓN</label>
+    <div class="switch-wrap">
+      <span class="switch-label" style="color:#94a3b8">Incr / Fixes / Deuda</span>
+      <button class="switch" id="switchOp" onclick="toggleOperacion()">
+        <div class="switch-knob" id="switchOpKnob"></div>
+      </button>
     </div>
   </div>
   <div class="divider"></div>
@@ -319,10 +334,11 @@ const DOMAINS = {
   LOYALTY:      {color:'#92400e',po:'Tomás Hercerg', hasData:true,  url:'https://cencosud.atlassian.net/jira/software/c/projects/WR/boards/12961/timeline'},
 };
 const STATUS = {
-  done:    {bg:'#dcfce7',border:'#16a34a',label:'Realizado',icon:'✓'},
-  ontrack: {bg:'#fef3c7',border:'#d97706',label:'En curso', icon:'▶'},
-  risk:    {bg:'#fed7aa',border:'#ea580c',label:'En riesgo',icon:'!'},
-  overdue: {bg:'#fecaca',border:'#dc2626',label:'Atrasado', icon:'⚠'},
+  done:    {bg:'#dcfce7',border:'#16a34a',label:'Realizado',  icon:'✓'},
+  ontrack: {bg:'#fef3c7',border:'#d97706',label:'En curso',   icon:'▶'},
+  started: {bg:'#fef9c3',border:'#ca8a04',label:'Iniciada',   icon:'◐'},
+  risk:    {bg:'#fed7aa',border:'#ea580c',label:'En riesgo',  icon:'!'},
+  overdue: {bg:'#fecaca',border:'#dc2626',label:'Atrasado',   icon:'⚠'},
   todo:    {bg:'#f3f4f6',border:'#6b7280',label:'Planificada',icon:'○'},
 };
 const MONTH_NAMES   = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -409,12 +425,25 @@ const ALL_EPICS = {
 // ─── ESTADO ───────────────────────────────────────────────────────────────────
 const now            = new Date();
 let sinceLastMonth   = true;
+let showOperacion    = false; // muestra Incrementalidad / Fixes / Deuda técnica
 let scale            = 'mes';
 let filterStatus     = new Set(Object.keys(STATUS));
 let filterDomains    = new Set(Object.keys(DOMAINS).filter(d=>DOMAINS[d].hasData));
 let filterCountries  = new Set(Object.keys(COUNTRIES));
 let soloCountry      = null; // para "Solo X" quick filter
 let expandedEpicKey  = null; // épica actualmente expandida
+
+const OPERACION_KEYWORDS = ['incrementalidad','fixes','deuda'];
+function isOperacion(title){ return OPERACION_KEYWORDS.some(k=>title.toLowerCase().includes(k)); }
+
+// Estatus visual efectivo: si la épica ya pasó su fecha de inicio → amarillo
+function effectiveStatus(epic){
+  if(epic.status==='todo'){
+    const s=new Date(epic.start[0],epic.start[1],epic.start[2]);
+    if(s<=now) return 'started';
+  }
+  return epic.status;
+}
 
 const SIDEBAR_W = 220;
 const ROW_H     = 56;
@@ -517,20 +546,31 @@ function fmtDate(arr){return new Date(arr[0],arr[1],arr[2]).toLocaleDateString('
 // ─── TOOLTIP (follows mouse) ──────────────────────────────────────────────────
 const TOOLTIP = document.getElementById('tooltip');
 let ttVisible = false;
+let ttHideTimer = null;
 
-document.addEventListener('mousemove', e => {
-  if (!ttVisible) return;
+// Position tooltip near cursor (called when bar is hovered)
+function positionTip(clientX, clientY) {
   const OFFSET = 16;
-  let x = e.clientX + OFFSET;
-  let y = e.clientY + OFFSET;
-  // Keep within viewport
-  if (x + 300 > window.innerWidth)  x = e.clientX - 300 - OFFSET;
-  if (y + 180 > window.innerHeight) y = e.clientY - 180 - OFFSET;
+  let x = clientX + OFFSET;
+  let y = clientY + OFFSET;
+  const ttW = TOOLTIP.offsetWidth  || 300;
+  const ttH = TOOLTIP.offsetHeight || 260;
+  if (x + ttW > window.innerWidth)  x = Math.max(8, clientX - ttW - OFFSET);
+  if (y + ttH > window.innerHeight) y = Math.max(8, clientY - ttH - OFFSET);
   TOOLTIP.style.left = x + 'px';
   TOOLTIP.style.top  = y + 'px';
+}
+
+// Tooltip stays open when hovered so user can scroll tickets
+TOOLTIP.addEventListener('mouseenter', () => {
+  clearTimeout(ttHideTimer);
+});
+TOOLTIP.addEventListener('mouseleave', () => {
+  hideTip();
 });
 
-function showTip(title,key,label,color,start,end,pct,continua){
+function showTip(title,key,label,color,start,end,pct,continua,ev){
+  clearTimeout(ttHideTimer);
   document.getElementById('tt-title').textContent = title;
   document.getElementById('tt-key').textContent   = key;
   const s=document.getElementById('tt-status');
@@ -545,15 +585,28 @@ function showTip(title,key,label,color,start,end,pct,continua){
   const ttk=document.getElementById('tt-tickets');
   if(epObj&&epObj.tickets&&epObj.tickets.length>0){
     const statusDotColor=s=>{const m={'En progreso':'#0284c7','Ready for Testing':'#7c3aed','Code Review':'#7c3aed','Ready For Release':'#059669','Ready for Deploy':'#059669','Realizado':'#16a34a','Listo':'#16a34a','Hecho':'#16a34a','Backlog':'#94a3b8','Para hacer':'#94a3b8','Cancelado':'#dc2626','Suspendido (Hold)':'#dc2626','En Refinamiento':'#f59e0b','Actividad Refinada':'#f59e0b','Seleccionado para desarrollar':'#0284c7','Pruebas':'#059669','En progreso':'#0284c7'};return m[s]||'#94a3b8';};
-    const shown=epObj.tickets.slice(0,7);
+    const shown=epObj.tickets;
     ttk.innerHTML='<div style="border-top:1px solid #334155;margin-bottom:6px;padding-top:6px"><span style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:.05em">TICKETS ('+epObj.tickets.length+')</span></div>'+
-      shown.map(t=>{const c=statusDotColor(t.status);return'<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><div style="width:7px;height:7px;border-radius:50%;background:'+c+';flex-shrink:0"></div><span style="font-size:9px;color:#94a3b8;flex-shrink:0">'+t.key+'</span><span style="font-size:9px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1" title="'+t.title+'">'+t.title+'</span></div>';}).join('');
+      shown.map(t=>{
+        const c=statusDotColor(t.status);
+        const bg=c+'22';
+        return '<div style="background:#1e293b;border:1px solid #334155;border-radius:5px;padding:5px 7px;margin-bottom:5px">'
+          +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">'
+          +'<div style="width:6px;height:6px;border-radius:50%;background:'+c+';flex-shrink:0"></div>'
+          +'<span style="font-size:9px;font-weight:700;color:#7dd3fc;flex-shrink:0">'+t.key+'</span>'
+          +'</div>'
+          +'<div style="font-size:10px;color:#e2e8f0;line-height:1.35;margin-bottom:4px;word-break:break-word">'+t.title+'</div>'
+          +'<span style="font-size:8px;font-weight:600;padding:1px 6px;border-radius:3px;background:'+bg+';color:'+c+';border:1px solid '+c+'44">'+t.status+'</span>'
+          +'</div>';
+      }).join('');
     ttk.style.display='block';
   } else { ttk.innerHTML=''; ttk.style.display='none'; }
   TOOLTIP.style.display='block';
   ttVisible=true;
+  if(ev) positionTip(ev.clientX, ev.clientY);
 }
-function hideTip(){ TOOLTIP.style.display='none'; ttVisible=false; }
+function hideTip(){ clearTimeout(ttHideTimer); TOOLTIP.style.display='none'; ttVisible=false; }
+function scheduleHide(){ ttHideTimer=setTimeout(hideTip, 250); }
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 function render(){
@@ -565,30 +618,39 @@ function render(){
   const activeCodes = soloCountry ? new Set([soloCountry]) : filterCountries;
 
   const allFlat=Object.entries(ALL_EPICS).flatMap(([d,list])=>list.map(e=>({...e,domain:d})));
-  const filtered=allFlat.filter(e=>filterStatus.has(e.status)&&filterDomains.has(e.domain)&&activeCodes.has(e.country));
+  const filtered=allFlat.filter(e=>
+    filterStatus.has(effectiveStatus(e)) &&
+    filterDomains.has(e.domain) &&
+    activeCodes.has(e.country) &&
+    (showOperacion || !isOperacion(e.title))
+  );
   const byDomain={};
   Object.keys(DOMAINS).forEach(d=>{byDomain[d]=[];});
   filtered.forEach(e=>byDomain[e.domain].push(e));
   const visibleDomains=Object.keys(DOMAINS).filter(d=>filterDomains.has(d)&&byDomain[d].length>0);
 
   const stats={
-    done:filtered.filter(e=>e.status==='done').length,
-    ontrack:filtered.filter(e=>e.status==='ontrack').length,
-    risk:filtered.filter(e=>e.status==='risk').length,
-    overdue:filtered.filter(e=>e.status==='overdue').length,
-    todo:filtered.filter(e=>e.status==='todo').length,
-    total:filtered.length,
-    avg:filtered.length?Math.round(filtered.reduce((s,e)=>s+e.progress,0)/filtered.length):0,
+    done:   filtered.filter(e=>effectiveStatus(e)==='done').length,
+    ontrack:filtered.filter(e=>effectiveStatus(e)==='ontrack'||effectiveStatus(e)==='started').length,
+    risk:   filtered.filter(e=>effectiveStatus(e)==='risk').length,
+    overdue:filtered.filter(e=>effectiveStatus(e)==='overdue').length,
+    todo:   filtered.filter(e=>effectiveStatus(e)==='todo').length,
+    total:  filtered.length,
+    avg:    filtered.length?Math.round(filtered.reduce((s,e)=>s+e.progress,0)/filtered.length):0,
   };
 
   const tPct=(Math.max(0,Math.min(dateToPx([now.getFullYear(),now.getMonth(),now.getDate()],cols),tot))/tot)*100;
   document.getElementById('ganttInner').style.minWidth=(SIDEBAR_W+tot)+'px';
 
-  // ── Switch
+  // ── Switch VISTA
   const sw=document.getElementById('switchBtn'),kn=document.getElementById('switchKnob');
   sw.style.background=sinceLastMonth?'#0369a1':'#cbd5e1';
   kn.style.left=sinceLastMonth?'23px':'3px';
   document.getElementById('switchHint').textContent=sinceLastMonth?`Abr ${now.getFullYear()} →`:'Ene 2026 →';
+  // ── Switch OPERACIÓN
+  const swOp=document.getElementById('switchOp'),knOp=document.getElementById('switchOpKnob');
+  swOp.style.background=showOperacion?'#ca8a04':'#cbd5e1';
+  knOp.style.left=showOperacion?'23px':'3px';
 
   // ── Scale buttons
   ['btnMes','btnTrimestre'].forEach(id=>{
@@ -625,10 +687,9 @@ function render(){
 
   // ── KPIs
   document.getElementById('kpis').innerHTML=`
-    <div class="kpi global"><div class="kpi-label">Avance global</div><div class="kpi-val" style="color:#16a34a">${stats.avg}%</div></div>
     ${[
       {label:'Done',  count:stats.done,   color:'#16a34a',icon:'✓',st:'done'},
-      {label:'Curso', count:stats.ontrack,color:'#0284c7',icon:'▶',st:'ontrack'},
+      {label:'En curso', count:stats.ontrack,color:'#d97706',icon:'▶',st:'ontrack'},
       {label:'Riesgo',count:stats.risk,   color:'#ea580c',icon:'!',st:'risk'},
       {label:'Atraso',count:stats.overdue,color:'#dc2626',icon:'⚠',st:'overdue'},
       {label:'Pend.', count:stats.todo,   color:'#6b7280',icon:'○',st:'todo'},
@@ -720,12 +781,12 @@ function render(){
         const{startPx,widthPx}=getEpicPx(epic,cols);
         const lPct=(startPx/tot)*100;
         const wPct=(widthPx/tot)*100;
-        const st=STATUS[epic.status];
+        const st=STATUS[effectiveStatus(epic)];
         const ct=COUNTRIES[epic.country];
         const safeTitle=epic.title.replace(/'/g,"\\'").replace(/"/g,'&quot;');
         return`<div class="epic-bar"
-          onmouseenter="showTip('${safeTitle}','${epic.key}','${st.label}','${st.border}','${fmtDate(epic.start)}','${fmtDate(epic.end)}',${epic.progress},${epic.continua})"
-          onmouseleave="hideTip()"
+          onmouseenter="showTip('${safeTitle}','${epic.key}','${st.label}','${st.border}','${fmtDate(epic.start)}','${fmtDate(epic.end)}',${epic.progress},${epic.continua},event)"
+          onmouseleave="scheduleHide()"
           style="left:${lPct}%;width:${wPct}%;top:${BAR_GAP}px;bottom:${BAR_GAP}px;
             background:${st.bg};border:2px solid ${st.border};
             border-right:${epic.continua?`3px dashed ${st.border}`:`2px solid ${st.border}`}">
@@ -805,8 +866,9 @@ function closeTickets() {
   expandedEpicKey = null;
 }
 
-function toggleView()    { sinceLastMonth=!sinceLastMonth; render(); }
-function setScale(s)     { scale=s; render(); }
+function toggleView()      { sinceLastMonth=!sinceLastMonth; render(); }
+function toggleOperacion() { showOperacion=!showOperacion; render(); }
+function setScale(s)       { scale=s; render(); }
 function toggleStatus(s) { filterStatus.has(s)?filterStatus.delete(s):filterStatus.add(s); render(); }
 function toggleDomain(d) { if(!DOMAINS[d].hasData)return; filterDomains.has(d)?filterDomains.delete(d):filterDomains.add(d); render(); }
 function toggleCountry(c){ filterCountries.has(c)?filterCountries.delete(c):filterCountries.add(c); render(); }
