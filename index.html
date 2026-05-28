@@ -132,8 +132,8 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; padd
   border-radius: 10px;
   font-size: 11px;
   z-index: 9999;
-  max-width: 230px;
-  width: 230px;
+  max-width: 290px;
+  width: 290px;
   box-shadow: 0 8px 28px rgba(0,0,0,.35);
   pointer-events: none;
   display: none;
@@ -202,6 +202,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; padd
   <div class="tt-dates"  id="tt-dates"></div>
   <div class="tt-prog-row"><span>Progreso</span><span id="tt-pct" style="color:#f1f5f9;font-weight:700"></span></div>
   <div class="tt-prog-bg"><div class="tt-prog-fill" id="tt-fill"></div></div>
+  <div id="tt-tickets" style="margin-top:8px"></div>
 </div>
 
 <div class="header">
@@ -339,68 +340,68 @@ const ALL_EPICS = {
     {key:'WR-3514',title:'Integracion Search (Algolia)',status:'overdue',progress:0,country:'US',start:[2026,3,26],end:[2026,4,26],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3514',tickets:[]},
     {key:'WR-3398',title:'Mis Listas',status:'todo',progress:0,country:'AR',start:[2026,5,15],end:[2026,5,26],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3398',tickets:[]},
     {key:'WR-3588',title:'Garantias',status:'todo',progress:0,country:'CO',start:[2026,8,21],end:[2026,9,19],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3588',tickets:[]},
-    {key:'WR-3624',title:'METRO',status:'todo',progress:0,country:'PE',start:[2026,7,4],end:[2026,11,28],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3624',tickets:[]},
+    {key:'WR-3624',title:'METRO',status:'todo',progress:0,country:'PE',start:[2026,6,15],end:[2026,11,31],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3624',tickets:[]},
     {key:'WR-3494',title:'VEA',status:'todo',progress:0,country:'AR',start:[2026,5,1],end:[2026,5,30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3494',tickets:[]},
     {key:'WR-3568',title:'Jumbo +',status:'todo',progress:0,country:'AR',start:[2026,7,10],end:[2026,8,7],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3568',tickets:[]},
     {key:'WR-3400',title:'Recomendation',status:'todo',progress:0,country:'CO',start:[2026,6,13],end:[2026,6,27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3400',tickets:[]},
-    {key:'WR-3165',title:'Deltas GBarbosa',status:'todo',progress:0,country:'BR',start:[2026,5,1],end:[2026,6,15],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3165',tickets:[]},
+    {key:'WR-3165',title:'Deltas GBarbosa',status:'todo',progress:0,country:'BR',start:[2026,5,17],end:[2026,6,31],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3165',tickets:[{key:'WR-3632',title:'[BE][BR/GB][Catalog] Variantes',status:'Backlog'},{key:'WR-3631',title:'[BE][BR/GB][Catalog] Garantias',status:'Backlog'}]},
     {key:'WR-3526',title:'Deals',status:'todo',progress:0,country:'US',start:[2026,6,13],end:[2026,6,31],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3526',tickets:[]},
-    {key:'WR-2964',title:'Mis Listas',status:'ontrack',progress:50,country:'CO',start:[2026,4,4],end:[2026,4,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2964',tickets:[]},
-    {key:'WR-3392',title:'Recomendation',status:'todo',progress:0,country:'AR',start:[2026,5,1],end:[2026,5,15],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3392',tickets:[]},
-    {key:'WR-3363',title:'Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3363',tickets:[]},
-    {key:'WR-3368',title:'Fixes',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3368',tickets:[]},
-    {key:'WR-3372',title:'Deuda tecnica',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3372',tickets:[]},
+    {key:'WR-2964',title:'Mis Listas',status:'ontrack',progress:0,country:'CO',start:[2026,4,4],end:[2026,4,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2964',tickets:[{key:'WR-3668',title:'[BE][COL] Transformar un carro a una lista ',status:'En Refinamiento'},{key:'WR-3651',title:'[BE]Persistencia de Metadata de “Mis Listas” en Carrito para',status:'En Refinamiento'},{key:'WR-3646',title:'[BE][CO] Documentación Técnica  “Mis Listas” ',status:'En Refinamiento'},{key:'WR-3214',title:'TEST',status:'Backlog'},{key:'WR-3213',title:'test',status:'Para hacer'},{key:'WR-2954',title:'[BE] Seguridad y monitoreo Mis listas',status:'Ready for Testing'},{key:'WR-2953',title:'[BE] Manejo de eventos Mis listas',status:'Ready for Testing'},{key:'WR-2951',title:'[BE] Casos de uso list query Mis listas',status:'Ready for Testing'},{key:'WR-2949',title:'[BE] Casos de negocio Mis listas',status:'Ready for Testing'},{key:'WR-2948',title:'[BE] Capa de persistencia Mis listas',status:'Ready for Testing'},{key:'WR-2947',title:'[BE] Preparación infra Mis listas',status:'Pruebas'},{key:'WR-2944',title:'[BE] Definir protobuf Mis listas',status:'Validación'},{key:'WR-2603',title:'[BE] Endpoint para eliminar producto de favoritos',status:'Backlog'},{key:'WR-2601',title:'[BE] Endpoint agregar a favoritos',status:'Backlog'},{key:'WR-904',title:'[BE] Implementar Redis a Mis listas',status:'Validación'},{key:'WR-903',title:'[BE] Mis listas recibir productos sin depender de un servici',status:'Validación'}]},
+    {key:'WR-3392',title:'Recomendation',status:'todo',progress:0,country:'AR',start:[2026,5,1],end:[2026,5,15],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3392',tickets:[{key:'WR-2923',title:'[BE][AR] Migrar Personalize a product/recommendations',status:'Pruebas'},{key:'WR-1412',title:'[BE] Micro de product no debe devolver productos sin stock',status:'Validación'},{key:'WR-942',title:'[BE][AR] Pensados para ti - Personalize',status:'Cancelado'},{key:'WR-325',title:'[BE] Servicios Personalize',status:'Cancelado'}]},
+    {key:'WR-3363',title:'Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3363',tickets:[]},
+    {key:'WR-3368',title:'Fixes',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3368',tickets:[]},
+    {key:'WR-3372',title:'Deuda tecnica',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3372',tickets:[]},
   ],
   ARQUITECTURA:[
-    {key:'WR-2772',title:'Purchase Notifications',status:'ontrack',progress:50,country:'US',start:[2026,4,24],end:[2026,5,5],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2772',tickets:[]},
+    {key:'WR-2772',title:'Purchase Notifications',status:'ontrack',progress:0,country:'US',start:[2026,4,24],end:[2026,5,5],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2772',tickets:[{key:'WR-2809',title:'[Notifications] [Customer] Micro push notification',status:'Code Review'},{key:'WR-2807',title:'[Notifications] [Customer] Cambios en BFF',status:'En Refinamiento'},{key:'WR-2806',title:'[Notifications] [Customer] Cambios en Customer',status:'En Refinamiento'},{key:'WR-2805',title:'[Notifications] [Customer] Cambios en Auth',status:'Code Review'},{key:'WR-2763',title:'[Notifications] Envio de FCM Token al BE ',status:'Suspendido (Hold)'}]},
     {key:'WR-3161',title:'Base GBarbosa',status:'todo',progress:0,country:'BR',start:[2026,5,1],end:[2026,5,12],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3161',tickets:[]},
     {key:'WR-3569',title:'Jumbo +',status:'todo',progress:0,country:'AR',start:[2026,7,10],end:[2026,8,7],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3569',tickets:[]},
   ],
   CHECKOUT:[
     {key:'WR-3602',title:'VEA',status:'todo',progress:0,country:'AR',start:[2026,5,1],end:[2026,6,27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3602',tickets:[]},
     {key:'WR-3516',title:'See my order sections',status:'todo',progress:0,country:'US',start:[2026,7,3],end:[2026,6,17],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3516',tickets:[]},
-    {key:'WR-3583',title:'MX 1 CLICK',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2026,5,1],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3583',tickets:[]},
+    {key:'WR-3583',title:'MX 1 CLICK',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2026,5,1],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3583',tickets:[{key:'WR-3693',title:'[BE][COL] Mostrar Promo MxN',status:'En Refinamiento'},{key:'WR-3547',title:'[BE]Enviar detalle de MX para que front pueda mapear correct',status:'En Refinamiento'}]},
     {key:'WR-3581',title:'Promo Combo',status:'todo',progress:0,country:'CO',start:[2026,5,1],end:[2026,5,15],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3581',tickets:[]},
     {key:'WR-3439',title:'Puntos Cenco',status:'todo',progress:0,country:'CO',start:[2026,5,29],end:[2026,6,27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3439',tickets:[]},
     {key:'WR-3164',title:'Deltas GBarbosa',status:'todo',progress:0,country:'BR',start:[2026,5,1],end:[2026,6,31],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3164',tickets:[]},
     {key:'WR-3574',title:'CARRO v2',status:'todo',progress:0,country:'CO',start:[2026,7,24],end:[2026,8,7],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3574',tickets:[]},
-    {key:'WR-2848',title:'CARRO V1',status:'todo',progress:0,country:'CO',start:[2026,4,1],end:[2026,4,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2848',tickets:[]},
+    {key:'WR-2848',title:'CARRO V1',status:'todo',progress:0,country:'CO',start:[2026,4,1],end:[2026,4,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2848',tickets:[{key:'WR-3673',title:'[BE][Cart V1] Desacoplamiento de VTEX en Update Shipping',status:'En progreso'},{key:'WR-3672',title:'[BE][CKO][Cart V1] Creación de función y bus de eventos para',status:'En progreso'},{key:'WR-3616',title:'[BE][Carro] Creación de endpoint para vaciado de carrito',status:'Ready for Testing'},{key:'WR-3615',title:'[BE][Carro] Desacoplamiento de VTEX en creación de carrito',status:'Ready for Testing'},{key:'WR-3614',title:'[BE][Carro] Cambio de provider de enriquecimiento de product',status:'Ready for Testing'},{key:'WR-3065',title:'[BE] Caso get cart para improvement carro',status:'En progreso'},{key:'WR-2996',title:'[BE] Patch item Carro',status:'Suspendido (Hold)'},{key:'WR-2933',title:'[BE] [Consumer] AddressSellerResolved para Carro',status:'Seleccionado para desarrollar'},{key:'WR-2907',title:'[BE] [Create Cart] Update shipping Carro',status:'Suspendido (Hold)'},{key:'WR-2849',title:'[BE] Actualización datos de cliente Carro',status:'Code Review'},{key:'WR-2847',title:'[BE] Endpoint crear Carro - Flujo síncrono',status:'Pruebas'}]},
     {key:'WR-3336',title:'Confirmation',status:'todo',progress:0,country:'CO',start:[2026,7,10],end:[2026,7,21],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3336',tickets:[]},
     {key:'WR-3335',title:'Billing',status:'todo',progress:0,country:'CO',start:[2026,6,13],end:[2026,7,7],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3335',tickets:[]},
     {key:'WR-3334',title:'Shipping',status:'todo',progress:0,country:'CO',start:[2026,5,15],end:[2026,6,10],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3334',tickets:[]},
-    {key:'WR-3333',title:'Profile',status:'todo',progress:0,country:'CO',start:[2026,4,30],end:[2026,5,12],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3333',tickets:[]},
-    {key:'WR-3364',title:'Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3364',tickets:[]},
-    {key:'WR-3369',title:'Fixes',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3369',tickets:[]},
-    {key:'WR-3373',title:'Deuda tecnica',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3373',tickets:[]},
+    {key:'WR-3333',title:'Profile',status:'todo',progress:0,country:'CO',start:[2026,4,30],end:[2026,5,12],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3333',tickets:[{key:'WR-3448',title:'[BE][CO] Generar eventos en Customer para CKO',status:'En Refinamiento'},{key:'WR-3446',title:'[BE][CO] Listener en carro para profile',status:'En Refinamiento'},{key:'WR-3442',title:'[BE][CO] Endpoint BFF patch/profile',status:'En Refinamiento'},{key:'WR-3440',title:'[BE][CO] Endpoint BFF get/profile',status:'En Refinamiento'}]},
+    {key:'WR-3364',title:'Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3364',tickets:[]},
+    {key:'WR-3369',title:'Fixes',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3369',tickets:[]},
+    {key:'WR-3373',title:'Deuda tecnica',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3373',tickets:[]},
   ],
   CUSTOMER:[
-    {key:'WR-3535',title:'Member Events',status:'todo',progress:0,country:'US',start:[2027,2,28],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3535',tickets:[]},
-    {key:'WR-3533',title:'Mejoras Seleccion de Store',status:'todo',progress:0,country:'US',start:[2027,2,23],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3533',tickets:[]},
-    {key:'WR-3528',title:'Social Log In',status:'todo',progress:0,country:'US',start:[2027,2,25],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3528',tickets:[]},
+    {key:'WR-3535',title:'Member Events',status:'todo',progress:0,country:'US',start:[2027,2,28],end:[2027,3,27],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3535',tickets:[]},
+    {key:'WR-3533',title:'Mejoras Seleccion de Store',status:'todo',progress:0,country:'US',start:[2027,2,23],end:[2027,3,22],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3533',tickets:[]},
+    {key:'WR-3528',title:'Social Log In',status:'todo',progress:0,country:'US',start:[2027,2,25],end:[2027,3,24],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3528',tickets:[]},
     {key:'WR-3493',title:'VEA',status:'todo',progress:0,country:'AR',start:[2026,5,1],end:[2026,5,30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3493',tickets:[]},
     {key:'WR-3163',title:'Deltas GBarbosa',status:'todo',progress:0,country:'BR',start:[2026,5,1],end:[2026,5,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3163',tickets:[]},
     {key:'WR-3531',title:'Push Segmentadas',status:'todo',progress:0,country:'US',start:[2026,5,1],end:[2026,5,12],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3531',tickets:[]},
-    {key:'WR-3496',title:'Experiencia CP',status:'todo',progress:0,country:'AR',start:[2026,5,15],end:[2026,5,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3496',tickets:[]},
+    {key:'WR-3496',title:'Experiencia CP',status:'todo',progress:0,country:'AR',start:[2026,5,15],end:[2026,5,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3496',tickets:[{key:'WR-3663',title:'[UX][COL] Documentación - Experiencia CP',status:'Backlog'}]},
     {key:'WR-3438',title:'Puntos Cenco',status:'todo',progress:0,country:'CO',start:[2026,5,29],end:[2026,6,27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3438',tickets:[]},
-    {key:'WR-3403',title:'Manejo de errores',status:'todo',progress:0,country:'CO',start:[2026,5,1],end:[2026,5,15],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3403',tickets:[]},
-    {key:'WR-2772',title:'Purchase Notifications',status:'ontrack',progress:50,country:'US',start:[2026,4,24],end:[2026,5,5],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2772',tickets:[]},
+    {key:'WR-3403',title:'Manejo de errores',status:'todo',progress:0,country:'CO',start:[2026,5,1],end:[2026,5,15],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3403',tickets:[{key:'WR-3645',title:'[BE]Levantamiento y certificación de errores en el flujo de ',status:'En Refinamiento'}]},
+    {key:'WR-2772',title:'Purchase Notifications',status:'ontrack',progress:0,country:'US',start:[2026,4,24],end:[2026,5,5],continua:false,url:'https://cencosud.atlassian.net/browse/WR-2772',tickets:[{key:'WR-2809',title:'[Notifications] [Customer] Micro push notification',status:'Code Review'},{key:'WR-2807',title:'[Notifications] [Customer] Cambios en BFF',status:'En Refinamiento'},{key:'WR-2806',title:'[Notifications] [Customer] Cambios en Customer',status:'En Refinamiento'},{key:'WR-2805',title:'[Notifications] [Customer] Cambios en Auth',status:'Code Review'},{key:'WR-2763',title:'[Notifications] Envio de FCM Token al BE ',status:'Suspendido (Hold)'}]},
     {key:'WR-3655',title:'Metro',status:'todo',progress:0,country:'PE',start:[2026,7,3],end:[2026,11,28],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3655',tickets:[]},
     {key:'WR-3524',title:'Notifications Inbox',status:'todo',progress:0,country:'US',start:[2026,5,29],end:[2026,6,10],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3524',tickets:[]},
-    {key:'WR-3362',title:'Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3362',tickets:[]},
-    {key:'WR-3367',title:'Fixes',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3367',tickets:[]},
-    {key:'WR-3371',title:'Deuda tecnica',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3371',tickets:[]},
+    {key:'WR-3362',title:'Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3362',tickets:[]},
+    {key:'WR-3367',title:'Fixes',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3367',tickets:[]},
+    {key:'WR-3371',title:'Deuda tecnica',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3371',tickets:[]},
   ],
   LOYALTY:[
     {key:'WR-3567',title:'Jumbo + (Loyalty)',status:'todo',progress:0,country:'AR',start:[2026,7,10],end:[2026,8,7],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3567',tickets:[]},
     {key:'WR-3408',title:'Puntos Cenco',status:'todo',progress:0,country:'CO',start:[2026,5,29],end:[2026,6,27],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3408',tickets:[]},
-    {key:'WR-1722',title:'Cashback Wallet 2.0',status:'overdue',progress:0,country:'US',start:[2026,0,1],end:[2026,3,30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-1722',tickets:[]},
+    {key:'WR-1722',title:'Cashback Wallet 2.0',status:'overdue',progress:67,country:'US',start:[2026,0,1],end:[2026,3,30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-1722',tickets:[{key:'WR-3276',title:'[TFM] [Wallet2.0] Falla GetSummary',status:'Cancelado'},{key:'WR-2400',title:'[PRE-LAUNCH] Mapeo de estado en Wallet',status:'Ready for Deploy'},{key:'WR-2049',title:'[Planning][OOO] Analysis and planning of pending/upcoming is',status:'Realizado'}]},
     {key:'WR-3512',title:'Continuity Offers',status:'todo',progress:0,country:'US',start:[2026,5,15],end:[2026,6,3],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3512',tickets:[]},
-    {key:'WR-3522',title:'Birthday in App',status:'todo',progress:0,country:'US',start:[2026,4,18],end:[2026,4,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3522',tickets:[]},
-    {key:'WR-3518',title:'Club Hubs 2.0',status:'todo',progress:0,country:'US',start:[2026,4,4],end:[2026,5,12],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3518',tickets:[]},
-    {key:'WR-3520',title:'Loyalty 2.0',status:'todo',progress:0,country:'US',start:[2026,4,18],end:[2026,5,30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3520',tickets:[]},
-    {key:'WR-3366',title:'Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3366',tickets:[]},
-    {key:'WR-3370',title:'Fixes',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3370',tickets:[]},
-    {key:'WR-3374',title:'Deuda tecnica',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,3,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3374',tickets:[]},
+    {key:'WR-3522',title:'Birthday in App',status:'todo',progress:0,country:'US',start:[2026,4,18],end:[2026,4,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3522',tickets:[{key:'WR-3434',title:'[TFM] [Loyalty]Permitir identificar ofertas de cumpleaños pa',status:'Ready for Testing'}]},
+    {key:'WR-3518',title:'Club Hubs 2.0',status:'todo',progress:0,country:'US',start:[2026,4,4],end:[2026,5,12],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3518',tickets:[{key:'WR-3476',title:'[Loyalty][TFM] Club Hub 2.0: entregar “Earn by” y “Rewards/U',status:'Ready for Testing'}]},
+    {key:'WR-3520',title:'Loyalty 2.0',status:'todo',progress:0,country:'US',start:[2026,4,18],end:[2026,4,29],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3520',tickets:[]},
+    {key:'WR-3366',title:'Incrementalidad',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3366',tickets:[]},
+    {key:'WR-3370',title:'Fixes',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3370',tickets:[]},
+    {key:'WR-3374',title:'Deuda tecnica',status:'todo',progress:0,country:'CO',start:[2026,4,18],end:[2027,5,30],continua:true,url:'https://cencosud.atlassian.net/browse/WR-3374',tickets:[]},
   ],
 }
 
@@ -523,7 +524,7 @@ document.addEventListener('mousemove', e => {
   let x = e.clientX + OFFSET;
   let y = e.clientY + OFFSET;
   // Keep within viewport
-  if (x + 240 > window.innerWidth)  x = e.clientX - 240 - OFFSET;
+  if (x + 300 > window.innerWidth)  x = e.clientX - 300 - OFFSET;
   if (y + 180 > window.innerHeight) y = e.clientY - 180 - OFFSET;
   TOOLTIP.style.left = x + 'px';
   TOOLTIP.style.top  = y + 'px';
@@ -538,6 +539,17 @@ function showTip(title,key,label,color,start,end,pct,continua){
   document.getElementById('tt-pct').textContent=pct+'%';
   const f=document.getElementById('tt-fill');
   f.style.width=pct+'%'; f.style.background=color;
+  // Tickets
+  const allFlat2=Object.values(ALL_EPICS).flat();
+  const epObj=allFlat2.find(e=>e.key===key);
+  const ttk=document.getElementById('tt-tickets');
+  if(epObj&&epObj.tickets&&epObj.tickets.length>0){
+    const statusDotColor=s=>{const m={'En progreso':'#0284c7','Ready for Testing':'#7c3aed','Code Review':'#7c3aed','Ready For Release':'#059669','Ready for Deploy':'#059669','Realizado':'#16a34a','Listo':'#16a34a','Hecho':'#16a34a','Backlog':'#94a3b8','Para hacer':'#94a3b8','Cancelado':'#dc2626','Suspendido (Hold)':'#dc2626','En Refinamiento':'#f59e0b','Actividad Refinada':'#f59e0b','Seleccionado para desarrollar':'#0284c7','Pruebas':'#059669','En progreso':'#0284c7'};return m[s]||'#94a3b8';};
+    const shown=epObj.tickets.slice(0,7);
+    ttk.innerHTML='<div style="border-top:1px solid #334155;margin-bottom:6px;padding-top:6px"><span style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:.05em">TICKETS ('+epObj.tickets.length+')</span></div>'+
+      shown.map(t=>{const c=statusDotColor(t.status);return'<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><div style="width:7px;height:7px;border-radius:50%;background:'+c+';flex-shrink:0"></div><span style="font-size:9px;color:#94a3b8;flex-shrink:0">'+t.key+'</span><span style="font-size:9px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1" title="'+t.title+'">'+t.title+'</span></div>';}).join('');
+    ttk.style.display='block';
+  } else { ttk.innerHTML=''; ttk.style.display='none'; }
   TOOLTIP.style.display='block';
   ttVisible=true;
 }
@@ -642,7 +654,7 @@ function render(){
   document.getElementById('sidebarRows').innerHTML=visibleDomains.map(domain=>{
     const epics=byDomain[domain];
     const rows=packRows(epics,cols);
-    const h=rows.length*ROW_H;
+    const h=Math.max(rows.length*ROW_H, 190);
     const cfg=DOMAINS[domain];
     const avg=epics.length?Math.round(epics.reduce((s,e)=>s+e.progress,0)/epics.length):0;
     const sem=semaforo(avg,epics.length);
@@ -733,7 +745,7 @@ function render(){
       return`<div class="epic-row" style="height:${ROW_H}px">${gridLines}${barsHTML}</div>`;
     }).join('');
     const sep = isLast ? '' : '<div style="height:3px;background:#94a3b8;position:relative;z-index:10"></div>';
-    return`<div>${rowsHTML}${sep}</div>`;
+    const domainH=Math.max(rows.length*ROW_H,190);return`<div style="min-height:${domainH}px">${rowsHTML}${sep}</div>`;
   }).join('');
 }
 
@@ -801,7 +813,7 @@ function toggleCountry(c){ filterCountries.has(c)?filterCountries.delete(c):filt
 function setSolo(c)      { soloCountry=c; render(); }
 
 // Timestamp inyectado por el proceso programado (reemplaza __PROCESS_TIME__)
-const LAST_UPDATED = '28/05/2026 14:04';
+const LAST_UPDATED = '28/05/2026 19:06';
 
 function updateTimestamp(){
   var ts = (LAST_UPDATED && !LAST_UPDATED.startsWith('__')) ? LAST_UPDATED : '—';
