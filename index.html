@@ -788,6 +788,7 @@ function render(){
         const st=STATUS[effectiveStatus(epic)];
         const ct=COUNTRIES[epic.country];
         const safeTitle=epic.title.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+        const compact = widthPx < 80;
         return`<div class="epic-bar"
           onmouseenter="showTip('${safeTitle}','${epic.key}','${st.label}','${st.border}','${fmtDate(epic.start)}','${fmtDate(epic.end)}',${epic.progress},${epic.continua},event)"
           onmouseleave="scheduleHide()"
@@ -795,16 +796,16 @@ function render(){
             background:${st.bg};border:2px solid ${st.border};
             border-right:${epic.continua?`3px dashed ${st.border}`:`2px solid ${st.border}`}">
           <div class="epic-flag" style="background:${ct.color}22">${ct.flag}</div>
-          <a class="epic-jira" href="${epic.url}" target="_blank" style="background:${st.border}" onclick="event.stopPropagation()">↗</a>
-          ${(epic.tickets&&epic.tickets.length>0)?`<button onclick="event.stopPropagation();openTickets('${epic.key}')" title="Ver ${epic.tickets?epic.tickets.length:0} tickets" style="position:absolute;top:3px;right:${epic.tickets&&epic.tickets.length?'56':'28'}px;background:${st.border}18;border:1px solid ${st.border}44;color:${st.border};border-radius:3px;font-size:8px;font-weight:700;padding:1px 4px;cursor:pointer;line-height:13px">▼ ${epic.tickets.length}</button>`:''}
-          <div class="epic-title" style="color:${st.border}">${epic.title}</div>
-          <div class="epic-meta">
+          ${compact?'':`<a class="epic-jira" href="${epic.url}" target="_blank" style="background:${st.border}" onclick="event.stopPropagation()">↗</a>`}
+          ${compact?'':((epic.tickets&&epic.tickets.length>0)?`<button onclick="event.stopPropagation();openTickets('${epic.key}')" title="Ver ${epic.tickets.length} tickets" style="position:absolute;top:3px;right:${epic.tickets.length?'56':'28'}px;background:${st.border}18;border:1px solid ${st.border}44;color:${st.border};border-radius:3px;font-size:8px;font-weight:700;padding:1px 4px;cursor:pointer;line-height:13px">▼ ${epic.tickets.length}</button>`:'')}
+          <div class="epic-title" style="color:${st.border};${compact?'margin-right:0;padding-right:24px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25;':'padding-right:52px;'}">${epic.title}</div>
+          ${compact?'':`<div class="epic-meta">
             <span class="epic-key" style="color:${st.border};background:${st.border}18">${epic.key}</span>
             <span style="color:${st.border};font-weight:700;font-size:8px">${epic.progress}%</span>
-          </div>
-          <div class="progress-bg" style="background:${st.border}22">
+          </div>`}
+          ${compact?'':`<div class="progress-bg" style="background:${st.border}22">
             <div class="progress-fill" style="width:${epic.progress}%;background:${st.border}"></div>
-          </div>
+          </div>`}
         </div>`;
       }).join('');
       return`<div class="epic-row" style="height:${ROW_H}px">${gridLines}${barsHTML}</div>`;
