@@ -69,9 +69,11 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; padd
 .sidebar-foot { border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; }
 .domain-cell {
   border-right: 1px solid #e2e8f0;
-  border-bottom: 3px solid #94a3b8;
   background: #fff; display: flex; flex-direction: column;
   align-items: center; justify-content: center; padding: 14px 10px; gap: 8px;
+}
+.domain-sep {
+  height: 3px; background: #94a3b8; flex-shrink: 0; border-right: 1px solid #e2e8f0;
 }
 .domain-name { font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; text-align: center; line-height: 1.2; }
 .domain-po   { font-size: 10px; color: #64748b; text-align: center; line-height: 1.2; font-weight: 500; }
@@ -712,10 +714,11 @@ function render(){
   document.getElementById('sidebarFoot').style.height=FOOTER_H+'px';
 
   // ── Sidebar rows
-  document.getElementById('sidebarRows').innerHTML=visibleDomains.map(domain=>{
+  document.getElementById('sidebarRows').innerHTML=visibleDomains.map((domain,di)=>{
     const epics=byDomain[domain];
     const rows=packRows(epics,cols);
     const h=Math.max(rows.length*ROW_H, 190);
+    const isLastSidebar = di === visibleDomains.length - 1;
     const cfg=DOMAINS[domain];
     const avg=epics.length?Math.round(epics.reduce((s,e)=>s+e.progress,0)/epics.length):0;
     const sem=semaforo(avg,epics.length);
@@ -726,6 +729,7 @@ function render(){
         ${riskCount?`<div class="alert-badge" style="background:#fff7ed;color:#ea580c;border:1px solid #ea580c">! ${riskCount} riesgo</div>`:''}
         ${overdueCount?`<div class="alert-badge" style="background:#fef2f2;color:#dc2626;border:1px solid #dc2626">⚠ ${overdueCount} atraso</div>`:''}
       </div>`:'';
+    const sidebarSep = isLastSidebar ? '' : '<div class="domain-sep"></div>';
     return`<div class="domain-cell" style="height:${h}px">
       <div style="display:flex;flex-direction:column;align-items:center;gap:2px"><div class="domain-name" style="color:${cfg.color}">${domain}</div><div class="domain-po">${cfg.po}</div></div>
       <a class="domain-cta" href="${cfg.url}" target="_blank" style="background:${cfg.color}">Ver cronograma ↗</a>
@@ -735,7 +739,7 @@ function render(){
         <div class="sem-col"><div class="sem-num" style="color:${sem.color}">${avg}%</div><div class="sem-sub" style="color:${sem.color}">avance</div></div>
       </div>
       ${alertsHTML}
-    </div>`;
+    </div>${sidebarSep}`;
   }).join('');
 
   // ── Month header/footer (NO Enero highlight — solo current month)
@@ -805,8 +809,9 @@ function render(){
       }).join('');
       return`<div class="epic-row" style="height:${ROW_H}px">${gridLines}${barsHTML}</div>`;
     }).join('');
-    const sep = isLast ? '' : '<div style="height:3px;background:#94a3b8;position:relative;z-index:10"></div>';
-    const domainH=Math.max(rows.length*ROW_H,190);return`<div style="min-height:${domainH}px">${rowsHTML}${sep}</div>`;
+    const sep = isLast ? '' : '<div style="height:3px;background:#94a3b8;flex-shrink:0"></div>';
+    const domainH=Math.max(rows.length*ROW_H,190);
+    return`<div style="height:${domainH}px;overflow:hidden">${rowsHTML}</div>${sep}`;
   }).join('');
 }
 
