@@ -495,7 +495,49 @@ const ALL_EPICS = {
     {key:'WR-3764',title:'Deltas Giga',status:'todo',progress:0,country:'BR',start:[2026,8,1],end:[2026,9,1],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3764',tickets:[]},
     {key:'WR-3777',title:'Puntos Cenco',status:'todo',progress:0,country:'CO',start:[2026,6,17],end:[2026,6,30],continua:false,url:'https://cencosud.atlassian.net/browse/WR-3777',tickets:[]},
   ],
-};
+}
+
+
+// ─── ESTADO ───────────────────────────────────────────────────────────────────
+const now            = new Date();
+let sinceLastMonth   = true;
+let showOperacion    = false; // muestra Incrementalidad / Fixes / Deuda técnica
+let scale            = 'mes';
+let filterStatus     = new Set(Object.keys(STATUS));
+let filterDomains    = new Set(Object.keys(DOMAINS).filter(d=>DOMAINS[d].hasData));
+let filterCountries  = new Set(Object.keys(COUNTRIES));
+let soloCountry      = null; // para "Solo X" quick filter
+let expandedEpicKey  = null; // épica actualmente expandida
+
+const OPERACION_KEYWORDS = ['incrementalidad','fixes','deuda'];
+function isOperacion(title){ return OPERACION_KEYWORDS.some(k=>title.toLowerCase().includes(k)); }
+
+// Estatus visual efectivo: si la épica ya pasó su fecha de inicio → amarillo
+function effectiveStatus(epic){
+  if(epic.status==='todo'){
+    const s=new Date(epic.start[0],epic.start[1],epic.start[2]);
+    if(s<=now) return 'started';
+  }
+  return epic.status;
+}
+
+const SIDEBAR_W = 220;
+const ROW_H     = 56;
+const BAR_GAP   = 4;
+
+// ─── LAYOUT HELPERS ───────────────────────────────────────────────────────────
+function getColW() { return scale === 'mes' ? 216 : 280; } // 216 = 72*3, 280 trimestre
+
+function buildCols() {
+  const COL_W = getColW();
+  if (scale === 'trimestre') {
+    let qs = QUARTERS;
+    if (sinceLastMonth) {
+      const prevM=now.getMonth()===0?11:now.getMonth()-1;
+      const prevY=now.getMonth()===0?now.getFullYear()-1:now.getFullYear();
+      qs=QUARTERS.filter(q=>{const l=q.months[q.months.length-1];return l.y>prevY||(l.y===prevY&&l.m>=prevM);});
+    }
+    return {type:'trimestre',qs,totalDays:qs.reduce((s,q)=>s+q.days,0),COL_W};
   }
   const all=[];
   let y=2026,m=0;
@@ -913,7 +955,7 @@ function toggleCountry(c){ filterCountries.has(c)?filterCountries.delete(c):filt
 function setSolo(c)      { soloCountry=c; render(); }
 
 // Timestamp inyectado por el proceso programado (reemplaza __PROCESS_TIME__)
-const LAST_UPDATED = '01/06/2026 12:38';
+const LAST_UPDATED = '01/06/2026 13:14';
 
 function updateTimestamp(){
   var ts = (LAST_UPDATED && !LAST_UPDATED.startsWith('__')) ? LAST_UPDATED : '—';
