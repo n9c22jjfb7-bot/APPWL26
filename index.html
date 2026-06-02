@@ -119,7 +119,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; padd
 .epic-bar { position: absolute; border-radius: 5px; padding: 4px 7px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.1); cursor: default; }
 .epic-flag { position: absolute; top: 3px; right: 4px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 .epic-jira { position: absolute; top: 3px; right: 26px; font-size: 8px; font-weight: 700; padding: 1px 3px; border-radius: 2px; color: #fff; text-decoration: none; line-height: 13px; }
-.epic-title { font-size: 10px; font-weight: 700; margin-right: 48px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.epic-title { font-size: 10px; font-weight: 700; line-height: 1.2; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .epic-meta  { display: flex; align-items: center; gap: 3px; margin-top: 2px; }
 .epic-key   { font-size: 8px; font-weight: 700; padding: 1px 3px; border-radius: 2px; }
 .progress-bg   { position: absolute; bottom: 3px; left: 6px; right: 6px; height: 3px; border-radius: 2px; }
@@ -873,7 +873,7 @@ function render(){
           <div class="epic-flag" style="background:${ct.color}22">${ct.flag}</div>
           ${compact?'':`<a class="epic-jira" href="${epic.url}" target="_blank" style="background:${st.border}" onclick="event.stopPropagation()">↗</a>`}
           ${compact?'':((epic.tickets&&epic.tickets.length>0)?`<button onclick="event.stopPropagation();openTickets('${epic.key}')" title="Ver ${epic.tickets.length} tickets" style="position:absolute;top:3px;right:${epic.tickets.length?'56':'28'}px;background:${st.border}18;border:1px solid ${st.border}44;color:${st.border};border-radius:3px;font-size:8px;font-weight:700;padding:1px 4px;cursor:pointer;line-height:13px">▼ ${epic.tickets.length}</button>`:'')}
-          <div class="epic-title" style="color:${st.border};${compact?'margin-right:0;padding-right:24px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25;':'padding-right:52px;'}">${epic.title}</div>
+          <div class="epic-title" style="color:${st.border};${compact?'padding-right:24px;':'padding-right:52px;'}">${epic.title}</div>
           ${compact?'':`<div class="epic-meta">
             <span class="epic-key" style="color:${st.border};background:${st.border}18">${epic.key}</span>
             <span style="color:${st.border};font-weight:700;font-size:8px">${epic.progress}%</span>
