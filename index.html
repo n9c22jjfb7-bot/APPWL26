@@ -372,7 +372,7 @@ const ALL_EPICS = {
     {key:'WR-3568', title:'Jumbo +', status:'todo', progress:0, country:'AR', start:[2026, 7, 13], end:[2026, 9, 3], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3568', tickets:[]}
   ],
   ARQUITECTURA: [
-    {key:'WR-3161', title:'Base GBarbosa', status:'todo', progress:0, country:'US', start:[2026, 5, 1], end:[2026, 5, 12], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3161', tickets:[]},
+    {key:'WR-3161', title:'Base GBarbosa', status:'todo', progress:0, country:'BR', start:[2026, 5, 1], end:[2026, 5, 12], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3161', tickets:[]},
     {key:'WR-3459', title:'Creación del Repositorio, Diseño de Arquitectura y Documentación', status:'done', progress:100, country:'CO', start:[2026, 0, 1], end:[2026, 4, 31], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3459', tickets:[]},
     {key:'WR-3459', title:'Creación del Repositorio, Diseño de Arquitectura y Documentación', status:'done', progress:100, country:'AR', start:[2026, 0, 1], end:[2026, 4, 31], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3459', tickets:[]},
     {key:'WR-3459', title:'Creación del Repositorio, Diseño de Arquitectura y Documentación', status:'done', progress:100, country:'BR', start:[2026, 0, 1], end:[2026, 4, 31], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3459', tickets:[]},
@@ -413,8 +413,8 @@ const ALL_EPICS = {
     {key:'WR-3574', title:'CARRO v2', status:'todo', progress:0, country:'CO', start:[2026, 7, 24], end:[2026, 8, 7], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3574', tickets:[]}
   ],
   CUSTOMER: [
-    {key:'WR-2772', title:'Purchase Notifications', status:'todo', progress:0, country:'BR', start:[2026, 4, 1], end:[2026, 5, 15], continua:false, url:'https://cencosud.atlassian.net/browse/WR-2772', tickets:[]},
-    {key:'WR-3163', title:'Setup + Deltas GBarbosa', status:'todo', progress:0, country:'CO', start:[2026, 5, 1], end:[2026, 5, 30], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3163', tickets:[]},
+    {key:'WR-2772', title:'Purchase Notifications', status:'ontrack', progress:50, country:'US', start:[2026, 4, 1], end:[2026, 5, 15], continua:false, url:'https://cencosud.atlassian.net/browse/WR-2772', tickets:[]},
+    {key:'WR-3163', title:'Setup + Deltas GBarbosa', status:'todo', progress:0, country:'BR', start:[2026, 5, 1], end:[2026, 5, 30], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3163', tickets:[]},
     {key:'WR-3362', title:'Incrementalidad', status:'todo', progress:0, country:'CO', start:[2026, 4, 18], end:[2027, 5, 30], continua:true, url:'https://cencosud.atlassian.net/browse/WR-3362', tickets:[]},
     {key:'WR-3362', title:'Incrementalidad', status:'todo', progress:0, country:'AR', start:[2026, 4, 18], end:[2027, 5, 30], continua:true, url:'https://cencosud.atlassian.net/browse/WR-3362', tickets:[]},
     {key:'WR-3362', title:'Incrementalidad', status:'todo', progress:0, country:'BR', start:[2026, 4, 18], end:[2027, 5, 30], continua:true, url:'https://cencosud.atlassian.net/browse/WR-3362', tickets:[]},
@@ -433,7 +433,7 @@ const ALL_EPICS = {
   ],
   LOYALTY: [
     {key:'WR-1722', title:'Cashback Wallet 2.0', status:'overdue', progress:0, country:'US', start:[2026, 0, 1], end:[2026, 3, 30], continua:false, url:'https://cencosud.atlassian.net/browse/WR-1722', tickets:[]},
-    {key:'WR-3162', title:'Deltas GBarbosa', status:'todo', progress:0, country:'CO', start:[2026, 5, 15], end:[2026, 6, 14], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3162', tickets:[]},
+    {key:'WR-3162', title:'Deltas GBarbosa', status:'todo', progress:0, country:'BR', start:[2026, 5, 15], end:[2026, 6, 14], continua:false, url:'https://cencosud.atlassian.net/browse/WR-3162', tickets:[]},
     {key:'WR-3366', title:'Incrementalidad', status:'todo', progress:0, country:'CO', start:[2026, 4, 18], end:[2027, 5, 30], continua:true, url:'https://cencosud.atlassian.net/browse/WR-3366', tickets:[]},
     {key:'WR-3366', title:'Incrementalidad', status:'todo', progress:0, country:'AR', start:[2026, 4, 18], end:[2027, 5, 30], continua:true, url:'https://cencosud.atlassian.net/browse/WR-3366', tickets:[]},
     {key:'WR-3366', title:'Incrementalidad', status:'todo', progress:0, country:'BR', start:[2026, 4, 18], end:[2027, 5, 30], continua:true, url:'https://cencosud.atlassian.net/browse/WR-3366', tickets:[]},
@@ -908,7 +908,7 @@ function toggleCountry(c){ filterCountries.has(c)?filterCountries.delete(c):filt
 function setSolo(c)      { soloCountry=c; render(); }
 
 // Timestamp inyectado por el proceso programado (reemplaza __PROCESS_TIME__)
-const LAST_UPDATED = '09/06/2026 15:50';
+const LAST_UPDATED = '09/06/2026 19:11';
 
 function updateTimestamp(){
   var ts = (LAST_UPDATED && !LAST_UPDATED.startsWith('__')) ? LAST_UPDATED : '—';
